@@ -14,5 +14,11 @@
         "psr-4": {
             "deanar\\fileProcessor\\": ""
         }
-    }
+    },
+    "repositories":[
+        {
+            "type": "git",
+            "url": "git@bitbucket.org:rdeanar/yii2-file-processor.git"
+        }
+    ]
 }
