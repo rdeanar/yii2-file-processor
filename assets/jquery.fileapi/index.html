@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+
+    <link href="./statics/main.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+
+<div id="multiupload">
+    <form class="b-upload b-upload_multi" action="http://loqa.dev/rubaxa/ctrl.php" method="POST"
+          enctype="multipart/form-data">
+
+        <input type="hidden" name="test" value="valuetest"/>
+
+        <div class="b-upload__dnd">Drag and drop, automatic upload</div>
+        <div class="b-upload__dnd-not-supported">
+            <div class="btn btn-success js-fileapi-wrapper">
+                <span>Choose files</span>
+                <input type="file" name="filedata" multiple/>
+            </div>
+        </div>
+
+
+        <div class="b-upload__hint">Добавить файлы в очередь загрузки, например изображения ;]</div>
+
+        <div class="js-files b-upload__files">
+
+            <div class="js-file-tpl b-thumb" data-id="<%= uid %>" title="<% -name %>, <% -sizeText %>">
+                <div data-fileapi="file.remove" class="b-thumb__del">✖</div>
+                <div class="b-thumb__preview">
+                    <div class="b-thumb__preview__pic"></div>
+                </div>
+                <% if( /^image/.test(type) ){ %>
+                    <div data-fileapi="file.rotate.cw" class="b-thumb__rotate"></div>
+                <% } %>
+                <div class="b-thumb__progress progress progress-small">
+                    <div class="bar"></div>
+                </div>
+                <div class="b-thumb__name"><% -name %></div>
+            </div>
+
+        </div>
+
+        <hr/>
+        <div class="btn btn-success btn-small js-fileapi-wrapper">
+            <span>Add</span>
+            <input type="file" name="filedata"/>
+        </div>
+        <div class="js-upload btn btn-success btn-small">
+            <span>Upload</span>
+        </div>
+    </form>
+</div>
+
+
+<script src="//code.jquery.com/jquery-1.8.2.min.js"></script>
+<script>!window.jQuery && document.write('<script src="/js/jquery.dev.js"><' + '/script>');</script>
+
+<script>
+    var FileAPI = {
+        debug: true, media: true, staticPath: './FileAPI/'
+    };
+</script>
+<script src="./FileAPI/FileAPI.min.js"></script>
+<script src="./FileAPI/FileAPI.exif.js"></script>
+<script src="./jquery.fileapi.js"></script>
+<!--<script src="./statics/jquery.modal.js"></script>-->
+
+<script>
+    jQuery(function ($) {
+
+        var uploadContainer = $('#multiupload');
+
+        uploadContainer.fileapi({
+
+            // Restores the list of files uploaded earlier.
+            files: [{
+                src: "http://loqa.dev/rubaxa/valuetest1.jpg",
+                type: "image/jpeg",
+                name: "valuetest1.jpg",
+                size: 31409,
+                data: {
+                    id: 999,
+                    type: "projects"
+                }
+            }],
+
+            // Remove a file from the upload queue
+            onFileRemove: function (evt, file){
+                if( !confirm("Are you sure?") ){  //   + file.data.id + ' ' + file.data.type
+                    // Cancel remove
+                    evt.preventDefault();
+                }
+            },
+
+            onFileComplete: function (evt, uiEvt){
+                console.log(evt, uiEvt);
+
+                var file = uiEvt.file;
+                var json = uiEvt.result.images.filedata;
+
+                file.data = {
+                    id: json.id,
+                    type: json.type
+                };
+            },
+
+            onFileRemoveCompleted: function (evt, file){
+                evt.preventDefault();
+
+                file.$el
+                    .attr('disabled', true)
+                    .addClass('my_disabled')
+                ;
+
+                if( confirm('Delete "'+file.name+'"?' + file.data.id + ' ' + file.data.type) ){
+                    $.post('/api/remove', file.data);
+
+                    uploadContainer.fileapi("remove", file);
+                    // or so
+                    evt.widget.remove(file);
+                }else{
+                    file.$el
+                        .attr('disabled', false)
+                        .removeClass('my_disabled')
+                    ;
+                }
+            },
+
+
+            data: {
+                lala: 'testlalalala'
+            },
+
+            multiple: true,
+            elements: {
+                ctrl: { upload: '.js-upload' },
+                empty: { show: '.b-upload__hint' },
+                emptyQueue: { hide: '.js-upload' },
+                list: '.js-files',
+                file: {
+                    tpl: '.js-file-tpl',
+                    preview: {
+                        el: '.b-thumb__preview',
+                        width: 80,
+                        height: 80
+                    },
+                    upload: { show: '.progress', hide: '.b-thumb__rotate' },
+                    complete: { hide: '.progress', show: '.b-thumb__del' },
+                    progress: '.progress .bar'
+                },
+                dnd: {
+                    el: '.b-upload__dnd',
+                    hover: 'b-upload__dnd_hover',
+                    fallback: '.b-upload__dnd-not-supported'
+                }
+            }
+
+        });
+
+
+    });
+</script>
+
+</body>
+</html>
