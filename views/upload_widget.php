@@ -16,7 +16,7 @@
 
         <div class="clearfix js-files b-upload__files">
 
-            <div class="js-file-tpl b-thumb" data-id="<%= uid %>" title="<% -name %>, <% -sizeText %>">
+            <div class="js-file-tpl b-thumb" data-id="<%=uid%>" title="<%-name%>, <%-sizeText%>">
                 <div data-fileapi="file.remove" class="b-thumb__del">✖</div>
                 <div class="b-thumb__preview">
                     <div class="b-thumb__preview__pic"></div>
@@ -27,7 +27,7 @@
                 <div class="b-thumb__progress progress-upload progress-small">
                     <div class="bar"></div>
                 </div>
-                <div class="b-thumb__name"><% -name %></div>
+                <div class="b-thumb__name"><%-name%></div>
             </div>
 
         </div>

@@ -21,11 +21,19 @@ or add
 
 to the require section of your `composer.json` file.
 
+Then run migrations
+
+```bash
+ ./yii migrate/up --migrationPath=@deanar/fileProcessor/migrations
+```
+
 
 Usage
 -----
 
-Once the extension is installed, simply use it in your code by  :
+Once the extension is installed, simply use it in your form by  :
 
 ```php
-<?= \deanar\fileProcessor\AutoloadExample::widget(); ?>```
+<?= \deanar\fileProcessor\UploadWidget::widget(); ?>```
+
+

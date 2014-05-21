@@ -240,8 +240,10 @@ img {
 
 	.b-thumb__name {
 		width: 80px;
+        height: 14px;
 		overflow: hidden;
 		font-size: 12px;
+        white-space: nowrap;
 	}
 
 	.b-thumb__progress {

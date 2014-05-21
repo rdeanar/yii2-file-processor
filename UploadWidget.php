@@ -10,16 +10,24 @@ namespace deanar\fileProcessor;
 use \Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use deanar\fileProcessor\models;
+use yii\helpers\Url;
 
 
 class UploadWidget extends \yii\base\Widget
 {
+    public $type;
+    public $type_id;
+    public $hash;
+
     public $identifier = 'file-processor-item';
-    public $uploadUrl = 'http://loqa.dev/rubaxa/ctrl.php';
+    public $uploadUrl = null;  // 'http://loqa.dev/rubaxa/ctrl.php';
 
     public function init()
     {
         parent::init();
+        $this->hash = rand(111111, 999999);
+        $this->uploadUrl = Url::toRoute('fp/base/upload', true);
     }
 
     /**
@@ -28,6 +36,16 @@ class UploadWidget extends \yii\base\Widget
     public function run()
     {
         $asset = UploadAssets::register($this->getView());
+
+        $additionalData = Json::encode(array(
+            'type' => $this->type,
+            'type_id' => $this->type_id,
+            'hash' => $this->hash,
+            Yii::$app->request->csrfParam => Yii::$app->request->getCsrfToken(),
+        ));
+
+        $alrearyUploadedFiles = Json::encode(models\Uploads::getUploadsStack($this->type, $this->type_id));
+
 
         $fileApiInitSettings = <<<EOF
         var FileAPI = {
@@ -44,34 +62,24 @@ EOF;
             'url' : '$this->uploadUrl',
 
             // Restores the list of files uploaded earlier.
-            files: [{
-                src: "http://loqa.dev/rubaxa/valuetest1.jpg",
-                type: "image/jpeg",
-                name: "valuetest1.jpg",
-                size: 31409,
-                data: {
-                    id: 999,
-                    type: "projects"
-                }
-            }],
+            files: $alrearyUploadedFiles,
 
             // Remove a file from the upload queue
             onFileRemove: function (evt, file){
-                if( !confirm("Are you sure?") ){  //   + file.data.id + ' ' + file.data.type
+                if( !confirm("Are you sure?") ){
                     // Cancel remove
                     evt.preventDefault();
                 }
             },
 
             onFileComplete: function (evt, uiEvt){
-                //console.log(evt, uiEvt);
-
                 var file = uiEvt.file;
                 var json = uiEvt.result.images.filedata;
 
                 file.data = {
                     id: json.id,
-                    type: json.type
+                    type: json.type,
+                    type_id:  json.type_id
                 };
             },
 
@@ -83,7 +91,7 @@ EOF;
                     .addClass('my_disabled')
                 ;
 
-                if( confirm('Delete "'+file.name+'"?' + file.data.id + ' ' + file.data.type) ){
+                if( confirm('Delete "'+file.name+'"?' + file.data.id + ' ' + file.data.type+ ' ' + file.data.type_id) ){
                     $.post('/api/remove', file.data);
 
                     uploadContainer.fileapi("remove", file);
@@ -98,9 +106,7 @@ EOF;
             },
 
 
-            data: {
-                lala: 'testlalalala'
-            },
+            data: $additionalData,
 
             multiple: true,
             elements: {
@@ -136,6 +142,10 @@ EOF;
 
 
         return $this->render('upload_widget', array(
+//            'type' => $this->type,
+//            'type_id' => $this->type_id,
+//            'hash' => $this->hash,
+
             'identifier' => $this->identifier,
             'uploadUrl' => $this->uploadUrl,
         ));

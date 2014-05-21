@@ -6,14 +6,6 @@ class UploadAssets extends AssetBundle
 {
 	public $sourcePath = '@deanar/fileProcessor/assets';
 
-    /*
-     * <script>
-    var FileAPI = {
-        debug: true, media: true, staticPath: './FileAPI/'
-    };
-        </script>
-     */
-
 	public $js = [
 		'jquery.fileapi/FileAPI/FileAPI.min.js',
 		'jquery.fileapi/FileAPI/FileAPI.exif.js',
@@ -23,9 +15,7 @@ class UploadAssets extends AssetBundle
 		'jquery.fileapi/statics/main.css',
 	];
 
-    /*
-	public $depends = [
-		'yii\jui\CoreAsset',
-	];
-    */
+    public $depends = [
+        'yii\web\JqueryAsset',
+    ];
 }
