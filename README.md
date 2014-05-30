@@ -83,4 +83,21 @@ Once the extension is installed, simply use it in your form by adding this code 
     ]) ?>
 ```
 
+And you can access your images\files by:
+
+```php
+        $model = Project::findOne(6);
+        $uploads = $model->getFiles();
+
+        foreach($uploads as $u){
+            echo $u->imgTag('thumb2', true,['style'=>'border:1px solid red;']);
+        }
+```
+or just url (for files/download links)
+
+```php
+echo $u->getPublicFileUrl('thumb2', true);
+```
+
+
 
