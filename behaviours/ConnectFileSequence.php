@@ -9,26 +9,38 @@
 
 namespace deanar\fileProcessor\behaviours;
 
+use deanar\fileProcessor\models\Uploads;
 use yii;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
 
 class ConnectFileSequence extends Behavior
 {
-    public $in_attribute = 'name';
-    public $out_attribute = 'slug';
-    public $translit = true;
+    public $defaultType;
 
     public function events()
     {
         return [
             ActiveRecord::EVENT_AFTER_INSERT => 'updateSequence',
-            ActiveRecord::EVENT_AFTER_UPDATE => 'updateSequence',
         ];
     }
 
-
-    public function updateSequence(){
-        echo var_dump($_POST);
+    public function updateSequence($event){
+        $type_id = $this->owner->id;
+        $hash = Yii::$app->request->post('fp_hash');
+        Uploads::updateAll(['type_id' => $type_id], 'hash=:hash', [':hash' => $hash]);
     }
+
+
+    public function getFiles($type=null)
+    {
+        if($type === null) $type = $this->defaultType;
+
+        // TODO if defaultType is not set, use owner className
+
+        return $this->owner->hasMany( Uploads::className(), ['type_id' => 'id'] )
+            ->where('type = :type', [':type' => $type])
+            ->orderBy('ord')->all();
+    }
+
 }

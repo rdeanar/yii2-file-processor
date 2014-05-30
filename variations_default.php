@@ -1,7 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: deanar
- * Date: 22/05/14
- * Time: 15:20
- */ 
+
+return [
+    '_default' => [
+    ],
+    '_all' => [
+        '_original' => true,
+        '_thumb' => [80,80],
+    ]
+];

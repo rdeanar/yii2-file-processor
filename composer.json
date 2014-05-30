@@ -23,6 +23,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "2amigos/yii2-transliterator-helper": "*"
+        "2amigos/yii2-transliterator-helper": "*",
+        "yiisoft/yii2-imagine": "*"
     }
 }

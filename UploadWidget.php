@@ -21,13 +21,15 @@ class UploadWidget extends \yii\base\Widget
     public $hash;
 
     public $identifier = 'file-processor-item';
-    public $uploadUrl = null;  // 'http://loqa.dev/rubaxa/ctrl.php';
+    public $uploadUrl = null;
+    public $removeUrl = null;
 
     public function init()
     {
         parent::init();
         $this->hash = rand(111111, 999999);
         $this->uploadUrl = Url::toRoute('fp/base/upload', true);
+        $this->removeUrl = Url::toRoute('fp/base/remove', true);
     }
 
     /**
@@ -92,7 +94,7 @@ EOF;
                 ;
 
                 if( confirm('Delete "'+file.name+'"?' + file.data.id + ' ' + file.data.type+ ' ' + file.data.type_id) ){
-                    $.post('/api/remove', file.data);
+                    $.post('$this->removeUrl', file.data);
 
                     uploadContainer.fileapi("remove", file);
                     // or so
@@ -140,13 +142,12 @@ EOF;
         $this->getView()->registerJs($fileApiInitSettings);
         $this->getView()->registerJs($fileApiRun);
 
-
         return $this->render('upload_widget', array(
 //            'type' => $this->type,
 //            'type_id' => $this->type_id,
-//            'hash' => $this->hash,
+            'hash' => $this->hash,
 
-            'identifier' => $this->identifier,
+            'identifier' => $this->identifier, // TODO add to config or generate unique id
             'uploadUrl' => $this->uploadUrl,
         ));
     }

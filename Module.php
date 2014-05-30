@@ -8,14 +8,28 @@
 namespace deanar\fileProcessor;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 
 class Module extends \yii\base\Module
 {
+    public $space_replacement = '_';
+    public $variations_config = [];
+    public $upload_dir = 'uploads';
+
     /**
      * @inheritdoc
      */
     public $controllerNamespace = 'deanar\fileProcessor\controllers';
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $default = require(__DIR__ . '/variations_default.php');
+        $this->variations_config = ArrayHelper::merge($this->variations_config, $default);
+    }
 
     /**
      * @inheritdoc

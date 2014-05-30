@@ -1,8 +1,6 @@
-<div id="<?=$identifier?>">
-    <form class="b-upload b-upload_multi" action="<?=$uploadUrl?>" method="POST"
-          enctype="multipart/form-data">
+<div id="<?=$identifier?>" class="b-upload b-upload_multi">
 
-        <input type="hidden" name="test" value="valuetest"/>
+    <input type="hidden" name="fp_hash" value="<?=$hash?>"/>
 
         <div class="b-upload__dnd">Drag and drop, automatic upload</div>
         <div class="b-upload__dnd-not-supported">
@@ -40,5 +38,4 @@
         <div class="js-upload btn btn-success btn-small">
             <span>Upload</span>
         </div>
-    </form>
 </div>
