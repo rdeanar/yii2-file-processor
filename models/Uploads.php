@@ -91,6 +91,7 @@ class Uploads extends \yii\db\ActiveRecord
 
     public static function getUploadsStack($type, $type_id)
     {
+        if (is_null($type_id)) return [];
 
         $uploads = array();
 
@@ -347,6 +348,7 @@ class Uploads extends \yii\db\ActiveRecord
      *  Get variation filename
     */
     public function getFilename($variation='original'){
+        if(empty($this->filename)) return '';
         //TODO make file name template
         if($variation == 'original'){
             return $this->filename;
@@ -367,11 +369,13 @@ class Uploads extends \yii\db\ActiveRecord
      * Generate unique filename by uniqid() and original extension
      */
     public static function generateBaseFileName($filename){
+        //TODO perhaps check extension and mime type compatibility
         return uniqid().'.'.self::extractExtensionName($filename);
     }
 
 
     public function imgTag($variation='original', $absolute=false,$options=array()){
+        if( empty($this->filename) ) return '';
         $src = $this->getPublicFileUrl($variation,$absolute);
         $attributes = ['src'=>$src];
         return Html::tag('img', '', ArrayHelper::merge($attributes, $options));

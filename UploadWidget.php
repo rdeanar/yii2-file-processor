@@ -93,7 +93,7 @@ EOF;
                     .addClass('my_disabled')
                 ;
 
-                if( confirm('Delete "'+file.name+'"?' + file.data.id + ' ' + file.data.type+ ' ' + file.data.type_id) ){
+                if( confirm('Delete "'+file.name+'"?') ){
                     $.post('$this->removeUrl', file.data);
 
                     uploadContainer.fileapi("remove", file);

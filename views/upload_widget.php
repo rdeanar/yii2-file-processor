@@ -10,7 +10,7 @@
             </div>
         </div>
 
-        <div class="b-upload__hint">Добавить файлы в очередь загрузки, например изображения ;]</div>
+        <div class="b-upload__hint">Добавить файлы в очередь загрузки</div>
 
         <div class="clearfix js-files b-upload__files">
 
@@ -32,10 +32,11 @@
 
         <hr/>
         <div class="btn btn-success btn-small js-fileapi-wrapper">
-            <span>Add</span>
+            <span>Add File</span>
             <input type="file" name="filedata"/>
         </div>
         <div class="js-upload btn btn-success btn-small">
             <span>Upload</span>
         </div>
+    <hr/>
 </div>

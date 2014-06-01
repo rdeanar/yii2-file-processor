@@ -43,4 +43,11 @@ class ConnectFileSequence extends Behavior
             ->orderBy('ord')->all();
     }
 
+    public function getFirstFile($type=null){
+        return isset($this->getFiles($type)[0]) ? $this->getFiles($type)[0] : new Uploads();
+    }
+
+
+    //TODO add after_delete method for unlink files (or as alternative make console command for cleanup)
+
 }

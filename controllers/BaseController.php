@@ -2223,16 +2223,15 @@ class BaseController extends \yii\web\Controller
     public function actionIndex()
     {
 
-        $model = Project::findOne(6);
-
+        $model = Project::findOne(11);
         $uploads = $model->getFiles();
 
-        //return VarDumper::dumpAsString($uploads);
-
-        //return count($uploads);
-
         foreach($uploads as $u){
-            echo $u->imgTag('thumb2', true,['style'=>'border:1px solid red;']).'__';
+            /**
+             * @var $u Uploads
+             */
+            echo $u->id.$u->imgTag('preview', true,['style'=>'border:1px solid red;']);
+//            echo $u->getPublicFileUrl('thumb2', true);
         }
 
         //echo $model->id;
