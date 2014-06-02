@@ -375,9 +375,10 @@ class Uploads extends \yii\db\ActiveRecord
 
 
     public function imgTag($variation='original', $absolute=false,$options=array()){
+        //TODO return 'empty' value if no image available
         if( empty($this->filename) ) return '';
         $src = $this->getPublicFileUrl($variation,$absolute);
-        $attributes = ['src'=>$src];
+        $attributes = ['src' => $src];
         return Html::tag('img', '', ArrayHelper::merge($attributes, $options));
     }
 }
