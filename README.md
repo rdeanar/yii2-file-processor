@@ -7,19 +7,33 @@ Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-Either run
+Either run (not ready yet)
 
 ```
 php composer.phar require --prefer-dist deanar/yii2-file-processor "*"
 ```
 
-or add
+or
+
+1) add
 
 ```
 "deanar/yii2-file-processor": "*"
 ```
 
-to the require section of your `composer.json` file.
+to the require section of your `composer.json` file;
+
+2) add repository location in the repositories section of your `composer.json` file, like this:
+
+
+```
+    "repositories": [
+        {
+            "url": "git@github.com:rdeanar/yii2-file-processor.git",
+            "type": "git"
+        }
+    ],
+```
 
 Then run migrations
 
@@ -98,6 +112,44 @@ or just url (for files/download links)
 ```php
 echo $u->getPublicFileUrl('thumb2', true);
 ```
+
+
+You can display your images\files in the GridView.
+
+Add in the column list:
+
+```php
+     [
+         'class' => 'deanar\fileProcessor\components\ImageColumn',
+         'header' => 'Image',   // optional
+         'empty' => 'No Image', // optional
+         'type' => 'projects',  // optional, default value goes from behavior options
+         'variation' => '_thumb',
+         'htmlOptions' => [] // optional
+     ],
+
+```
+
+You can display list of your images\files anywhere else via DisplayWidget, e.g. in DetailView widget or just in the view.
+
+Case with DetailView:
+
+```php
+        'attributes' => [
+            'id',
+            'title',
+            ...
+            [
+                'attribute'=>'Images',
+                'value'=>\deanar\fileProcessor\DisplayWidget::widget(['type'=>'projects','type_id'=>$model->id,'variation'=>'_thumb']),
+                'format'=>'raw',
+            ],
+            ...
+            'text',
+        ],
+```
+
+All properties of DisplayWidget are required.
 
 
 
