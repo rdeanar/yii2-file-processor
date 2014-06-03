@@ -11,6 +11,7 @@ use \Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use deanar\fileProcessor\models;
+use deanar\fileProcessor\assets\UploadAssets;
 use yii\helpers\Url;
 
 

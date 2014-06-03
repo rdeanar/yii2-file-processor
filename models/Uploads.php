@@ -89,16 +89,26 @@ class Uploads extends \yii\db\ActiveRecord
      *
      */
 
+    public function isImage(){
+        return !is_null($this->width);
+    }
+
+    public static function getUploads($type, $type_id){
+        if (is_null($type_id)) return [];
+
+        return self::find()
+            ->where(['type' => $type, 'type_id' => $type_id])
+            ->orderBy('ord')
+            ->all();
+    }
+
     public static function getUploadsStack($type, $type_id)
     {
         if (is_null($type_id)) return [];
 
         $uploads = array();
 
-        $array = self::find()
-            ->where(['type' => $type, 'type_id' => $type_id])
-            ->orderBy('ord')
-            ->all();
+        $array = self::getUploads($type, $type_id);
 
         foreach ($array as $item) {
             /**
@@ -379,6 +389,6 @@ class Uploads extends \yii\db\ActiveRecord
         if( empty($this->filename) ) return '';
         $src = $this->getPublicFileUrl($variation,$absolute);
         $attributes = ['src' => $src];
-        return Html::tag('img', '', ArrayHelper::merge($attributes, $options));
+        return Html::tag('img', '', ArrayHelper::merge($options, $attributes));
     }
 }

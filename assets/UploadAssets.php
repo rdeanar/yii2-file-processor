@@ -1,10 +1,10 @@
 <?php
-namespace deanar\fileProcessor;
+namespace deanar\fileProcessor\assets;
 use yii\web\AssetBundle;
 
 class UploadAssets extends AssetBundle
 {
-	public $sourcePath = '@deanar/fileProcessor/assets';
+	public $sourcePath = '@deanar/fileProcessor/vendor';
 
 	public $js = [
 		'jquery.fileapi/FileAPI/FileAPI.min.js',

@@ -16,7 +16,12 @@ use yii\db\ActiveRecord;
 
 class ConnectFileSequence extends Behavior
 {
+    const SELECT_ALL = 0;
+    const SELECT_IMAGES = 1;
+    const SELECT_FILES = 2;
+
     public $defaultType;
+    public $selectFileType = self::SELECT_ALL;
 
     public function events()
     {
@@ -31,6 +36,16 @@ class ConnectFileSequence extends Behavior
         Uploads::updateAll(['type_id' => $type_id], 'hash=:hash', [':hash' => $hash]);
     }
 
+    public function imagesOnly(){
+        $this->selectFileType = self::SELECT_IMAGES;
+        return $this;
+    }
+
+    public function filesOnly(){
+        $this->selectFileType = self::SELECT_FILES;
+        return $this;
+    }
+
 
     public function getFiles($type=null)
     {
@@ -38,8 +53,20 @@ class ConnectFileSequence extends Behavior
 
         // TODO if defaultType is not set, use owner className
 
+        switch ($this->selectFileType) {
+            case self::SELECT_IMAGES:
+                $condition = 'width IS NOT NULL';
+                break;
+            case self::SELECT_FILES:
+                $condition = 'width IS NULL';
+                break;
+            default:
+                $condition = '';
+        }
+
         return $this->owner->hasMany( Uploads::className(), ['type_id' => 'id'] )
-            ->where('type = :type', [':type' => $type])
+            ->andOnCondition('type =:type',[':type' => $type])
+            ->where($condition)
             ->orderBy('ord')->all();
     }
 
