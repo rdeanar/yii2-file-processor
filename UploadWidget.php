@@ -77,13 +77,20 @@ EOF;
 
             onFileComplete: function (evt, uiEvt){
                 var file = uiEvt.file;
-                var json = uiEvt.result.images.filedata;
+                var images = uiEvt.result.images;
+                console.log(images);
+                if(images === undefined){
+                    alert('Error uploading');
+                    uploadContainer.fileapi("remove", file);
+                }else{
+                    var json = images.filedata;
 
-                file.data = {
-                    id: json.id,
-                    type: json.type,
-                    type_id:  json.type_id
-                };
+                    file.data = {
+                        id: json.id,
+                        type: json.type,
+                        type_id:  json.type_id
+                    };
+                }
             },
 
             onFileRemoveCompleted: function (evt, file){

@@ -4,7 +4,7 @@ use yii\web\AssetBundle;
 
 class UploadAssets extends AssetBundle
 {
-	public $sourcePath = '@deanar/fileProcessor/vendor';
+	public $sourcePath = '@deanar/fileProcessor/vendor/assets';
 
 	public $js = [
 		'jquery.fileapi/FileAPI/FileAPI.min.js',
