@@ -31,6 +31,7 @@ class UploadWidget extends \yii\base\Widget
         $this->hash = rand(111111, 999999);
         $this->uploadUrl = Url::toRoute('fp/base/upload', true);
         $this->removeUrl = Url::toRoute('fp/base/remove', true);
+        $this->identifier .= '-' . $this->hash;
     }
 
     /**
@@ -151,11 +152,9 @@ EOF;
         $this->getView()->registerJs($fileApiRun);
 
         return $this->render('upload_widget', array(
-//            'type' => $this->type,
-//            'type_id' => $this->type_id,
             'hash' => $this->hash,
 
-            'identifier' => $this->identifier, // TODO add to config or generate unique id
+            'identifier' => $this->identifier,
             'uploadUrl' => $this->uploadUrl,
         ));
     }

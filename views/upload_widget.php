@@ -1,6 +1,6 @@
 <div id="<?=$identifier?>" class="b-upload b-upload_multi">
 
-    <input type="hidden" name="fp_hash" value="<?=$hash?>"/>
+    <input type="hidden" name="fp_hash[]" value="<?=$hash?>"/>
 
         <div class="b-upload__dnd">Drag and drop, automatic upload</div>
         <div class="b-upload__dnd-not-supported">

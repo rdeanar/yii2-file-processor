@@ -6,7 +6,6 @@
  * Time: 01:31
  */
 
-
 namespace deanar\fileProcessor\behaviours;
 
 use deanar\fileProcessor\models\Uploads;
@@ -27,13 +26,17 @@ class ConnectFileSequence extends Behavior
     {
         return [
             ActiveRecord::EVENT_AFTER_INSERT => 'updateSequence',
+            //TODO add after delete action for delte all connected pictures (don't know how yet)
         ];
     }
 
     public function updateSequence($event){
         $type_id = $this->owner->id;
-        $hash = Yii::$app->request->post('fp_hash');
-        Uploads::updateAll(['type_id' => $type_id], 'hash=:hash', [':hash' => $hash]);
+        $hashes = Yii::$app->request->post('fp_hash');
+
+        foreach($hashes as $hash){
+            Uploads::updateAll(['type_id' => $type_id], 'hash=:hash', [':hash' => $hash]);
+        }
     }
 
     public function imagesOnly(){
@@ -47,11 +50,12 @@ class ConnectFileSequence extends Behavior
     }
 
 
-    public function getFiles($type=null)
+    public function getFiles($type=null,$selectFileType=null)
     {
         if($type === null) $type = $this->defaultType;
-
         // TODO if defaultType is not set, use owner className
+
+        if(!is_null($selectFileType)) $this->selectFileType = $selectFileType;
 
         switch ($this->selectFileType) {
             case self::SELECT_IMAGES:
