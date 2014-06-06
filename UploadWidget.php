@@ -24,13 +24,15 @@ class UploadWidget extends \yii\base\Widget
     public $identifier = 'file-processor-item';
     public $uploadUrl = null;
     public $removeUrl = null;
+    public $sortUrl = null;
 
     public function init()
     {
         parent::init();
-        $this->hash = rand(111111, 999999);
-        $this->uploadUrl = Url::toRoute('fp/base/upload', true);
-        $this->removeUrl = Url::toRoute('fp/base/remove', true);
+        $this->hash        = rand(111111, 999999);
+        $this->uploadUrl   = Url::toRoute('fp/base/upload', true);
+        $this->removeUrl   = Url::toRoute('fp/base/remove', true);
+        $this->sortUrl     = Url::toRoute('fp/base/sort', true);
         $this->identifier .= '-' . $this->hash;
     }
 
@@ -120,6 +122,7 @@ EOF;
             data: $additionalData,
 
             multiple: true,
+
             elements: {
                 ctrl: { upload: '.js-upload' },
                 empty: { show: '.b-upload__hint' },
@@ -145,8 +148,46 @@ EOF;
 
         });
 
-EOF;
+        var container = uploadContainer.find('ul').get(0);
+        var sort = new Sortable(container, {
+          //handle: ".tile__title", // Restricts sort start click/touch to the specified element
+          draggable: ".b-thumb", // Specifies which items inside the element should be sortable
+          onUpdate: function (evt){
+            var sort = [];
 
+            $('#$this->identifier').find('li').each(function(i,el){
+                var filedata_id = $(el).data('id');
+                var file_data = $('#$this->identifier').fileapi('_getFile', filedata_id).data;
+                if(file_data !== undefined){
+                sort.push(file_data.id);
+                }
+            });
+            console.log( sort );
+
+                $.ajax({
+                    url: "$this->sortUrl",
+                    data:
+                    {
+                        sort: sort
+                    },
+                    type: "POST",
+                    error: function (data, status, e) {
+                        alert("Error while saving");
+                    },
+                    success:
+                        function(obj) {
+                            //console.log(obj);
+                        }
+                });
+
+
+
+            //var item = evt.item; // the current dragged HTMLElement
+    }
+    });
+
+
+EOF;
 
         $this->getView()->registerJs($fileApiInitSettings);
         $this->getView()->registerJs($fileApiRun);

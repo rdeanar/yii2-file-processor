@@ -162,7 +162,13 @@ class Uploads extends \yii\db\ActiveRecord
             if (substr($variation_name, 0, 1) !== '_' || $variation_name == '_thumb') {
                 // delete file
                 // TODO add config value, unlink files from the filesystem or only from database
-                if(! @unlink( $this->getUploadFilePath( $variation_name ) )) $error = true;
+                $file = $this->getUploadFilePath( $variation_name );
+                if (file_exists($file)) {
+                    if (!@unlink($file)) {
+                        echo 'Error unlinking file: ' . $file;
+                        $error = true;
+                    }
+                }
             }
         }
 
@@ -171,27 +177,20 @@ class Uploads extends \yii\db\ActiveRecord
         }
     }
 
-    public static function getMaxOrderValue($tyoe, $type_id)
+    public static function getMaxOrderValue($type, $type_id, $hash)
     {
-        //TODO доделать метод
-        /*
-         *      $criteria = new CDbCriteria;
-                $criteria->select='MAX(ord) as ord';
+        if (is_null($type) || is_null($type_id)){
+            $where = ['hash' => $hash];
+        }else{
+            $where = ['type' => $type, 'type_id' => $type_id];
+        }
 
-                if($model->type_id != ''){
-                    $criteria->addCondition('type_id='.$model->type_id);
-                    $criteria->addCondition('type="'.$model->type.'"');
-                }else{
-                    $criteria->addCondition('hash="'.$model->hash.'"');
-                }
+        $find =  self::find()
+            ->select('MAX(ord) as ord')
+            ->where($where)
+            ->one();
 
-                //$criteria->params=array(':searchTxt'=>'%hair spray%');
-                $picture_ord_max = Picture::model()->find($criteria);
-
-                $model->ord = $picture_ord_max->ord+1;
-
-         */
-        return 0;
+        return is_null($find) ? 0 : $find->ord;
     }
 
 
@@ -199,7 +198,6 @@ class Uploads extends \yii\db\ActiveRecord
     {
         // TODO set default variation instead of '_origial'
         $config = Yii::$app->getModule('fp')->variations_config;
-        $return = array();
 
         if (!array_key_exists($type, $config)) {
             $return = isset($config['_default']) ? $config['_default'] : array();
@@ -216,13 +214,14 @@ class Uploads extends \yii\db\ActiveRecord
     public function process($file_temp_name, $config=null){
         if( is_null($config) ) $config = Uploads::loadVariationsConfig($this->type);
 
-        $image = strpos($this->mime, 'image') !== false;
+        $image = $this->isImage();
+
         if ( !$image || ( isset($config['_original']) && $config['_original'] === true ) ){
             $upload_dir = $this->getUploadDir($this->type);
-            if(!is_dir($upload_dir) ) mkdir($upload_dir, 0777, true);
+
+            if(!is_dir($upload_dir) ) mkdir($upload_dir, 0777, true); // TODO maybe add yii function for creating dirs
 
             $upload_full_path = $upload_dir . DIRECTORY_SEPARATOR . $this->filename;
-
 
             if (move_uploaded_file($file_temp_name, $upload_full_path)) {
                 // cool
@@ -236,6 +235,7 @@ class Uploads extends \yii\db\ActiveRecord
 
         try {
             $imagine = new Imagine();
+
             /*
             $imagine = new Imagine\Gd\Imagine();
             $imagine = new Imagine\Imagick\Imagine();

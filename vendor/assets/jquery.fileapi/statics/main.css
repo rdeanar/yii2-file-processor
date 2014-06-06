@@ -406,3 +406,15 @@ img {
 	.popup__body {
 		margin: 10px 10px 5px;
 	}
+
+
+
+.sortable-ghost {
+    opacity: .2;
+}
+
+.b-upload__files{
+    margin-left: 0;
+    padding-left: 0;
+}
+

@@ -3,12 +3,14 @@
 namespace deanar\fileProcessor\controllers;
 
 
-use deanar\fileProcessor\models\Uploads;
 use \Yii;
 use yii\helpers\VarDumper;
+use yii\helpers\FileHelper;
+use yii\web\UploadedFile;
 use dosamigos\transliterator\TransliteratorHelper;
-use deanar\fileProcessor\Module;
 use deanar\fileProcessor\vendor\FileAPI;
+use deanar\fileProcessor\models\Uploads;
+use deanar\fileProcessor\Module;
 
 // only for tests
 use app\models\Project;
@@ -24,11 +26,11 @@ class BaseController extends \yii\web\Controller
         $model = Project::findOne(11);
         $uploads = $model->getFiles();
 
-        foreach($uploads as $u){
+        foreach ($uploads as $u) {
             /**
              * @var $u Uploads
              */
-            echo $u->id.$u->imgTag('preview', true,['style'=>'border:1px solid red;']);
+            echo $u->id . $u->imgTag('preview', true, ['style' => 'border:1px solid red;']);
 //            echo $u->getPublicFileUrl('thumb2', true);
         }
 
@@ -36,13 +38,13 @@ class BaseController extends \yii\web\Controller
 
         //return VarDumper::dumpAsString($model);
         //return $model->id.'--';
-/*
+        /*
 
-        $model->setProp2('SSSSS');
+                $model->setProp2('SSSSS');
 
-        return $model->foo();
-        return $model->getProp2();
-*/
+                return $model->foo();
+                return $model->getProp2();
+        */
         /*
         $op = new MimeTypeExtensions();
         //var_dump($op->get_type_by_ext("txt"));
@@ -57,7 +59,8 @@ class BaseController extends \yii\web\Controller
         */
     }
 
-    public function actionRemove(){
+    public function actionRemove()
+    {
 
         // TODO check for POST request
 
@@ -65,12 +68,12 @@ class BaseController extends \yii\web\Controller
         $type = Yii::$app->request->post('type');
         $type_id = Yii::$app->request->post('type_id');
 
-        $success = Uploads::staticRemoveFile($id, compact('type','type_id'));
+        $success = Uploads::staticRemoveFile($id, compact('type', 'type_id'));
 
-        if($success){
-            return 'File with id: '.$id.' removed successfully';
-        }else{
-            return 'Fail to remove file with id: '.$id;
+        if ($success) {
+            return 'File with id: ' . $id . ' removed successfully';
+        } else {
+            return 'Fail to remove file with id: ' . $id;
         }
     }
 
@@ -93,8 +96,11 @@ class BaseController extends \yii\web\Controller
             $files = FileAPI::getFiles(); // Retrieve File List
             $images = array();
 
+            //$file = UploadedFile::getInstanceByName('filedata');
+
             // Fetch all image-info from files list
             $this->fetchFiles($files, $images);
+
 
             // JSONP callback name
             $jsonp = isset($_REQUEST['callback']) ? trim($_REQUEST['callback']) : null;
@@ -128,62 +134,58 @@ class BaseController extends \yii\web\Controller
             // file info
             $file_temp_name = $files['tmp_name'];
             $file_real_name = basename($files['name']);
-            $file_name = str_replace(' ', $this->module->space_replacement, TransliteratorHelper::process($file_real_name, '', 'en'));
-
-            list($mime) = explode(';', @mime_content_type($file_temp_name));
-
-            if (strpos($mime, 'image') !== false) {
-                $file_dimensions = getimagesize($file_temp_name);
-            } else {
-                $file_dimensions = [null, null];
-            }
-
-            // content
-            $file_content = file_get_contents($file_temp_name);
-
-            // insert into db
-            $model = new Uploads();
-            $model->type = $type;
-            $model->type_id = $type_id;
-            $model->hash = $hash;
-
-            // load configuration
-            $config = Uploads::loadVariationsConfig($model->type);
 
 
-            $model->ord = Uploads::getMaxOrderValue($type, $type_id) + 1; // TODO append to end
-            $model->filename = Uploads::generateBaseFileName($file_name); //$file_name;
-            $model->original = $file_real_name;
-            $model->mime = $mime;
-            $model->size = filesize($file_temp_name);
-            $model->width = $file_dimensions[0];
-            $model->height = $file_dimensions[1];
+            if (is_uploaded_file($file_temp_name)) {
 
-            // save model, save file and fill response array
-            if ($model->save()) {
+                $mime = FileHelper::getMimeType($file_real_name, $file_temp_name, true);
 
-                // upload and process variations
-                $model->process($file_temp_name, $config);
+                if (strpos($mime, 'image') !== false) {
+                    $file_dimensions = getimagesize($file_temp_name);
+                } else {
+                    $file_dimensions = [null, null];
+                }
 
+                // insert into db
+                $model = new Uploads();
+                $model->type = $type;
+                $model->type_id = $type_id;
+                $model->hash = $hash;
+                $model->ord = Uploads::getMaxOrderValue($type, $type_id, $hash) + 1; // TODO append to end
+                $model->filename = Uploads::generateBaseFileName($file_real_name);
+                $model->original = $file_real_name;
+                $model->mime = $mime;
+                $model->size = filesize($file_temp_name);
+                $model->width = $file_dimensions[0];
+                $model->height = $file_dimensions[1];
 
-                //$base64 = base64_encode($file_content);
+                // save model, save file and fill response array
+                if ($model->save()) {
 
-                $images[$name] = [
-                    'width' => $model->width,
-                    'height' => $model->height,
-                    'mime' => $model->mime,
-                    'size' => $model->size,
-                    //'dataURL' => 'data:' . $model->mime . ';base64,' . $base64,
-                    'id' => $model->id,
-                    'type' => $model->type,
-                    'type_id' => $model->type_id,
-                    'hash' => $model->hash,
-                    'errors' => null,
-                ];
+                    // load configuration
+                    $config = Uploads::loadVariationsConfig($model->type);
 
-            }else{
-                VarDumper::dumpAsString($model->getErrors());
-                Yii::$app->end();
+                    // upload and process variations
+                    $model->process($file_temp_name, $config);
+
+                    $images[$name] = [
+                        'width' => $model->width,
+                        'height' => $model->height,
+                        'mime' => $model->mime,
+                        'size' => $model->size,
+                        'id' => $model->id,
+                        'type' => $model->type,
+                        'type_id' => $model->type_id,
+                        'hash' => $model->hash,
+                        'errors' => null,
+                    ];
+
+                } else {
+                    VarDumper::dumpAsString($model->getErrors());
+                    Yii::$app->end();
+                }
+            }else{ // is_uploaded_file
+                Yii::$app->end('No file was uploaded');
             }
 
         } else {
@@ -193,4 +195,15 @@ class BaseController extends \yii\web\Controller
         }
 
     }
+
+    public function actionSort(){
+        $sort = Yii::$app->request->post('sort',[]);
+        if( !is_array($sort)) return false;
+        foreach ($sort as $k => $v) {
+            $file = Uploads::findOne($v);
+            $file->ord = $k;
+            $file->save();
+        }
+    }
+
 }
