@@ -23,6 +23,18 @@ class BaseController extends \yii\web\Controller
     public function actionIndex()
     {
 
+        //return $mime = FileHelper::getMimeType('/Applications/MAMP/htdocs/loqa.dev/web/uploads/projects/538a1acdbedf8.jpg', null, true );
+
+        /*
+        if (function_exists("finfo_open")) {
+            return VarDumper::dumpAsString(get_defined_functions());
+            //return VarDumper::dumpAsString($mime);
+        } else {
+            function hui(){ }
+            return 'ggg';
+        }
+*/
+
         $model = Project::findOne(11);
         $uploads = $model->getFiles();
 
@@ -138,7 +150,7 @@ class BaseController extends \yii\web\Controller
 
             if (is_uploaded_file($file_temp_name)) {
 
-                $mime = FileHelper::getMimeType($file_real_name, $file_temp_name, true);
+                $mime = FileHelper::getMimeType($file_temp_name);
 
                 if (strpos($mime, 'image') !== false) {
                     $file_dimensions = getimagesize($file_temp_name);
