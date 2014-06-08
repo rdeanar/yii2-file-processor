@@ -70,6 +70,14 @@ EOF;
             // Restores the list of files uploaded earlier.
             files: $alrearyUploadedFiles,
 
+            onSelect: function (evt, data){
+                var to = setTimeout(function(){
+                    $(data.all).each(function(i, file){
+                        file.\$el.removeClass('js-sort');
+                    });
+                }, 200);
+            },
+
             // Remove a file from the upload queue
             onFileRemove: function (evt, file){
                 if( !confirm("Are you sure?") ){
@@ -81,7 +89,9 @@ EOF;
             onFileComplete: function (evt, uiEvt){
                 var file = uiEvt.file;
                 var images = uiEvt.result.images;
-                console.log(images);
+
+                file.\$el.addClass('js-sort');
+
                 if(images === undefined){
                     alert('Error uploading');
                     uploadContainer.fileapi("remove", file);
@@ -150,8 +160,9 @@ EOF;
 
         var container = uploadContainer.find('ul').get(0);
         var sort = new Sortable(container, {
-          //handle: ".tile__title", // Restricts sort start click/touch to the specified element
-          draggable: ".b-thumb", // Specifies which items inside the element should be sortable
+          handle: ".b-thumb__preview", // Restricts sort start click/touch to the specified element
+          draggable: ".js-sort", // Specifies which items inside the element should be sortable
+          ghostClass: "sortable-ghost",
           onUpdate: function (evt){
             var sort = [];
 
@@ -162,8 +173,7 @@ EOF;
                 sort.push(file_data.id);
                 }
             });
-            console.log( sort );
-
+            //console.log( sort );
                 $.ajax({
                     url: "$this->sortUrl",
                     data:
@@ -172,12 +182,8 @@ EOF;
                     },
                     type: "POST",
                     error: function (data, status, e) {
-                        alert("Error while saving");
-                    },
-                    success:
-                        function(obj) {
-                            //console.log(obj);
-                        }
+                        alert("Error while saving order.");
+                    }
                 });
 
 

@@ -14,7 +14,7 @@
 
         <ul class="clearfix js-files b-upload__files" id="tstdnd">
 
-            <li class="js-file-tpl b-thumb" data-id="<%=uid%>" title="<%-name%>, <%-sizeText%>">
+            <li class="js-file-tpl b-thumb js-sort" data-id="<%=uid%>" title="<%-name%>, <%-sizeText%>">
                 <div data-fileapi="file.remove" class="b-thumb__del">✖</div>
                 <div class="b-thumb__preview">
                     <div class="b-thumb__preview__pic"></div>

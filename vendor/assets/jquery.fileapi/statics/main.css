@@ -418,3 +418,6 @@ img {
     padding-left: 0;
 }
 
+.js-sort .b-thumb__preview{
+    cursor: move;
+}
