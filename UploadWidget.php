@@ -13,6 +13,7 @@ use yii\helpers\Json;
 use deanar\fileProcessor\models;
 use deanar\fileProcessor\assets\UploadAssets;
 use yii\helpers\Url;
+use yii\web\JsExpression;
 
 
 class UploadWidget extends \yii\base\Widget
@@ -26,6 +27,10 @@ class UploadWidget extends \yii\base\Widget
     public $removeUrl = null;
     public $sortUrl = null;
 
+    public $options = [];
+
+    private $options_allowed = ['autoUpload', 'multiple', 'accept', 'duplicate', 'maxSize', 'maxFiles', 'imageSize'];
+
     public function init()
     {
         parent::init();
@@ -34,6 +39,22 @@ class UploadWidget extends \yii\base\Widget
         $this->removeUrl   = Url::toRoute('fp/base/remove', true);
         $this->sortUrl     = Url::toRoute('fp/base/sort', true);
         $this->identifier .= '-' . $this->hash;
+    }
+
+    private function generateOptionsString(){
+        if (empty($this->options)) return '';
+        $return = '';
+        foreach($this->options as $option_name => $option_value){
+            if( !in_array($option_name, $this->options_allowed)) continue;
+
+            if($option_name == 'maxSize'){
+                //TODO make alises like KB, M, GB
+                //$option_value =
+            }
+
+            $return .= $option_name . ' : ' . json_encode($option_value) . ',' . PHP_EOL;
+        }
+        return $return;
     }
 
     /**
@@ -59,6 +80,7 @@ class UploadWidget extends \yii\base\Widget
         };
 EOF;
 
+
         $fileApiRun = <<<EOF
 
         var uploadContainer = $('#$this->identifier');
@@ -66,6 +88,8 @@ EOF;
         uploadContainer.fileapi({
 
             'url' : '$this->uploadUrl',
+
+            {$this->generateOptionsString()}
 
             // Restores the list of files uploaded earlier.
             files: $alrearyUploadedFiles,
@@ -75,7 +99,7 @@ EOF;
                     $(data.all).each(function(i, file){
                         file.\$el.removeClass('js-sort');
                     });
-                }, 200);
+                }, 300);
             },
 
             // Remove a file from the upload queue
@@ -105,6 +129,7 @@ EOF;
                     };
                 }
             },
+
 
             onFileRemoveCompleted: function (evt, file){
                 evt.preventDefault();

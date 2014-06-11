@@ -94,6 +94,22 @@ Once the extension is installed, simply use it in your form by adding this code 
     <?= \deanar\fileProcessor\UploadWidget::widget([
         'type' => 'projects',
         'type_id' => $model->id,
+
+        'options' => [
+            'autoUpload' => true,
+            'multiple' => true,
+            'accept' => 'image/*,application/zip',
+            'duplicate' => false,
+            'maxSize' => '200000',
+            'maxFiles' => 3,
+            'imageSize' => [
+                'minWidth' => 150,
+                'maxWidth' => 2000,
+                'minHeight' => 150,
+                'maxHeight' => 2000,
+            ],
+        ],
+
     ]) ?>
 ```
 
