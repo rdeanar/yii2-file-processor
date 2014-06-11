@@ -391,4 +391,30 @@ class Uploads extends \yii\db\ActiveRecord
         $attributes = ['src' => $src];
         return Html::tag('img', '', ArrayHelper::merge($options, $attributes));
     }
+
+
+    /**
+     * Converts php.ini style size to bytes
+     *
+     * @param string $sizeStr $sizeStr
+     * @return int
+     */
+    public static function sizeToBytes($sizeStr)
+    {
+        // used decimal, not binary
+        $kilo = 1000;
+        switch (substr($sizeStr, -1)) {
+            case 'M':
+            case 'm':
+                return (int) $sizeStr * $kilo * $kilo;
+            case 'K':
+            case 'k':
+                return (int) $sizeStr * $kilo;
+            case 'G':
+            case 'g':
+                return (int) $sizeStr * $kilo * $kilo * $kilo;
+            default:
+                return (int) $sizeStr;
+        }
+    }
 }

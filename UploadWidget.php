@@ -27,6 +27,8 @@ class UploadWidget extends \yii\base\Widget
     public $removeUrl = null;
     public $sortUrl = null;
 
+    public $multiple = true;
+
     public $options = [];
 
     private $options_allowed = ['autoUpload', 'multiple', 'accept', 'duplicate', 'maxSize', 'maxFiles', 'imageSize'];
@@ -44,12 +46,19 @@ class UploadWidget extends \yii\base\Widget
     private function generateOptionsString(){
         if (empty($this->options)) return '';
         $return = '';
+
+        if(!isset($this->options['multiple'])) $this->options['multiple'] = true;
+        if($this->options['multiple'] === false){
+            $this->options['maxFiles'] = 1;
+            $this->options['multiple'] = true; // hack, because if false you can add many files, but uploaded will be only the last one.
+        }
+        $this->multiple = $this->options['multiple'];
+
         foreach($this->options as $option_name => $option_value){
             if( !in_array($option_name, $this->options_allowed)) continue;
 
             if($option_name == 'maxSize'){
-                //TODO make alises like KB, M, GB
-                //$option_value =
+                $option_value = models\Uploads::sizeToBytes($option_value);
             }
 
             $return .= $option_name . ' : ' . json_encode($option_value) . ',' . PHP_EOL;
@@ -71,7 +80,7 @@ class UploadWidget extends \yii\base\Widget
             Yii::$app->request->csrfParam => Yii::$app->request->getCsrfToken(),
         ));
 
-        $alrearyUploadedFiles = Json::encode(models\Uploads::getUploadsStack($this->type, $this->type_id));
+        $alreadyUploadedFiles = Json::encode(models\Uploads::getUploadsStack($this->type, $this->type_id));
 
 
         $fileApiInitSettings = <<<EOF
@@ -93,7 +102,7 @@ EOF;
 
                 // count and size
                 if(errors.maxFiles)  this.raiseError('Can not add file "' + file.name + '". Too much files.');
-                if(errors.maxSize)   this.raiseError('Can not add file "' + file.name + '". File bigger that need by ' + errors.maxSize + ' bytes.');
+                if(errors.maxSize)   this.raiseError('Can not add file "' + file.name + '". File bigger that need by ' + this.bytesToSize(errors.maxSize) + '.');
 
                 // min dimension
                 if(errors.minWidth)  this.raiseError('Can not add file "' + file.name + '". File thinner than need by ' + errors.minWidth  + ' pixels.');
@@ -107,6 +116,15 @@ EOF;
             raiseError: function(msg){
                 //console.log(msg);
                 alert(msg);
+            },
+
+            // used decimal, not binary
+            bytesToSize: function(bytes) {
+               if(bytes == 0) return '0 Byte';
+               var k = 1000;
+               var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+               var i = Math.floor(Math.log(bytes) / Math.log(k));
+               return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
             }
         }
 
@@ -114,13 +132,14 @@ EOF;
 
         uploadContainer.fileapi({
 
-            'url' : '$this->uploadUrl',
-
+            url : '$this->uploadUrl',
+            data: $additionalData,
             {$this->generateOptionsString()}
 
             // Restores the list of files uploaded earlier.
-            files: $alrearyUploadedFiles,
+            files: $alreadyUploadedFiles,
 
+            // Events
             onSelect: function (evt, data){
                 var to = setTimeout(function(){
                     $(data.all).each(function(i, file){
@@ -184,11 +203,6 @@ EOF;
                 }
             },
 
-
-            data: $additionalData,
-
-            multiple: true,
-
             elements: {
                 ctrl: { upload: '.js-upload' },
                 empty: { show: '.b-upload__hint' },
@@ -226,29 +240,22 @@ EOF;
                 var filedata_id = $(el).data('id');
                 var file_data = $('#$this->identifier').fileapi('_getFile', filedata_id).data;
                 if(file_data !== undefined){
-                sort.push(file_data.id);
+                    sort.push(file_data.id);
                 }
             });
-            //console.log( sort );
-                $.ajax({
-                    url: "$this->sortUrl",
-                    data:
-                    {
-                        sort: sort
-                    },
-                    type: "POST",
-                    error: function (data, status, e) {
-                        alert("Error while saving order.");
-                    }
-                });
 
-
+            $.ajax({
+                url: "$this->sortUrl",
+                data: { sort: sort },
+                type: "POST",
+                error: function (data, status, e) {
+                    alert("Error while saving order.");
+                }
+            });
 
             //var item = evt.item; // the current dragged HTMLElement
-    }
-    });
-
-
+            }
+        });
 EOF;
 
         $this->getView()->registerJs($fileApiInitSettings);
@@ -259,6 +266,7 @@ EOF;
 
             'identifier' => $this->identifier,
             'uploadUrl' => $this->uploadUrl,
+            'multiple' => $this->multiple,
         ));
     }
 

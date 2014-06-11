@@ -100,7 +100,7 @@ Once the extension is installed, simply use it in your form by adding this code 
             'multiple' => true,
             'accept' => 'image/*,application/zip',
             'duplicate' => false,
-            'maxSize' => '200000',
+            'maxSize' => '2M', // you can use 'M', 'K', 'G' or simple size in bytes
             'maxFiles' => 3,
             'imageSize' => [
                 'minWidth' => 150,

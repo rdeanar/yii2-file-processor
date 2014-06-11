@@ -6,7 +6,7 @@
         <div class="b-upload__dnd-not-supported">
             <div class="btn btn-success js-fileapi-wrapper">
                 <span>Choose files</span>
-                <input type="file" name="filedata" multiple/>
+                <input type="file" name="filedata" <?= $multiple ? 'multiple' : '' ?>/>
             </div>
         </div>
 
