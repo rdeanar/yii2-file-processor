@@ -83,6 +83,33 @@ EOF;
 
         $fileApiRun = <<<EOF
 
+        var fp_helper = {
+            showErrors: function(file){
+                var errors = file.errors;
+
+                if(errors === undefined) return true;
+
+                //console.log('error list:', errors);
+
+                // count and size
+                if(errors.maxFiles)  this.raiseError('Can not add file "' + file.name + '". Too much files.');
+                if(errors.maxSize)   this.raiseError('Can not add file "' + file.name + '". File bigger that need by ' + errors.maxSize + ' bytes.');
+
+                // min dimension
+                if(errors.minWidth)  this.raiseError('Can not add file "' + file.name + '". File thinner than need by ' + errors.minWidth  + ' pixels.');
+                if(errors.minHeight) this.raiseError('Can not add file "' + file.name + '". File lower than need by ' + errors.minHeight + ' pixels.');
+
+                // max dimension
+                if(errors.maxWidth)  this.raiseError('Can not add file "' + file.name + '". File wider than need by  ' + errors.maxWidth + ' pixels.');
+                if(errors.maxHeight) this.raiseError('Can not add file "' + file.name + '". File higher than need by ' + errors.maxHeight + ' pixels.');
+            },
+
+            raiseError: function(msg){
+                //console.log(msg);
+                alert(msg);
+            }
+        }
+
         var uploadContainer = $('#$this->identifier');
 
         uploadContainer.fileapi({
@@ -97,7 +124,11 @@ EOF;
             onSelect: function (evt, data){
                 var to = setTimeout(function(){
                     $(data.all).each(function(i, file){
-                        file.\$el.removeClass('js-sort');
+                        if( file.\$el === undefined ){
+                            fp_helper.showErrors(file);
+                        }else{
+                            file.\$el.removeClass('js-sort');
+                        }
                     });
                 }, 300);
             },
