@@ -2,11 +2,11 @@
     "name": "deanar/yii2-file-processor",
     "description": "Upload and process files and images",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","upload","files","images"],
+    "keywords": ["yii2","extension","upload","files","images","resize"],
     "license": "BSD-4-Clause",
     "authors": [
         {
-            "name": "deanar",
+            "name": "Mikhail Razumovskiy",
             "email": "rdeanar@gmail.com"
         }
     ],
@@ -15,15 +15,8 @@
             "deanar\\fileProcessor\\": ""
         }
     },
-    "repositories":[
-        {
-            "type": "git",
-            "url": "git@bitbucket.org:rdeanar/yii2-file-processor.git"
-        }
-    ],
     "require": {
         "php": ">=5.4.0",
-        "2amigos/yii2-transliterator-helper": "*",
         "yiisoft/yii2-imagine": "*"
     }
 }
