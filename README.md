@@ -1,4 +1,4 @@
-File Processor
+File Processor (Yii2 Extension)
 ==============
 Upload and process files and images
 
