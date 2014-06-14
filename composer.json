@@ -4,6 +4,7 @@
     "type": "yii2-extension",
     "keywords": ["yii2","extension","upload","files","images","resize"],
     "license": "BSD-4-Clause",
+    "version" : "0.1.0",
     "authors": [
         {
             "name": "Mikhail Razumovskiy",

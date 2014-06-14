@@ -13,9 +13,7 @@ Either run (not ready yet)
 php composer.phar require --prefer-dist deanar/yii2-file-processor "*"
 ```
 
-or
-
-1) add
+or add
 
 ```
 "deanar/yii2-file-processor": "*"
@@ -23,17 +21,6 @@ or
 
 to the require section of your `composer.json` file;
 
-2) add repository location in the repositories section of your `composer.json` file, like this:
-
-
-```
-    "repositories": [
-        {
-            "url": "git@github.com:rdeanar/yii2-file-processor.git",
-            "type": "git"
-        }
-    ],
-```
 
 Then run migrations
 
