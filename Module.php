@@ -16,6 +16,8 @@ class Module extends \yii\base\Module
     public $space_replacement = '_';
     public $variations_config = [];
     public $upload_dir = 'uploads';
+    public $default_quality = 95;
+    public $default_resize_mod = 'inset';
 
     /**
      * @inheritdoc

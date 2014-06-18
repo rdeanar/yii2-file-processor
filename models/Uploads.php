@@ -34,11 +34,15 @@ use Imagine\Exception\Exception;
 class Uploads extends \yii\db\ActiveRecord
 {
     public $filename_separator = '_';
-    public $upload_dir = '';
+    public $upload_dir = ''; // override in init
+    public $default_quality; // override in init
+    public $default_resize_mod; // override in init
 
 
     public function init(){
-        $this->upload_dir = Yii::$app->getModule('fp')->upload_dir;
+        $this->upload_dir           = Yii::$app->getModule('fp')->upload_dir;
+        $this->default_quality      = Yii::$app->getModule('fp')->default_quality;
+        $this->default_resize_mod   = Yii::$app->getModule('fp')->default_resize_mod;
         parent::init();
     }
 
@@ -264,7 +268,7 @@ class Uploads extends \yii\db\ActiveRecord
         $config = array();
         $arrayIndexed = ArrayHelper::isIndexed($variationConfig);
         $argumentCount = count($variationConfig);
-        $defaultMode = 'inset'; // TODO add default value to configuration
+        $defaultMode = $this->default_resize_mod;
 
         if ($arrayIndexed) {
             $config['width'] = $variationConfig[0];
@@ -272,10 +276,16 @@ class Uploads extends \yii\db\ActiveRecord
             if ($argumentCount > 2) {
                 $config['mode'] = in_array($variationConfig[2], array('inset', 'outbound')) ? $variationConfig[2] : $defaultMode;
             }
+            if ($argumentCount > 3) {
+                $config['quality'] = is_numeric($variationConfig[3]) ? $variationConfig[3] : $this->default_quality;
+            }
+
         } else {
             $config['width'] = $variationConfig['width'];
             $config['height'] = $variationConfig['height'];
             $config['mode'] = in_array($variationConfig['mode'], array('inset', 'outbound')) ? $variationConfig['mode'] : $defaultMode;
+            if( isset($config['quality']) )
+                $config['quality'] =  is_numeric($config['quality']) ? $config['quality']  : $this->default_quality;
             // fill color for resize mode fill in (inset variation)
             //$config['watermark'] = $variationConfig['watermark'];
             // watermark position
@@ -284,7 +294,8 @@ class Uploads extends \yii\db\ActiveRecord
             // etc
         }
 
-        if (!isset($config['mode'])) $config['mode'] = $defaultMode;
+        if (!isset($config['mode']))    $config['mode']    = $defaultMode;
+        if (!isset($config['quality'])) $config['quality'] = $this->default_quality;
 
         return $config;
     }
@@ -315,7 +326,11 @@ class Uploads extends \yii\db\ActiveRecord
 
         $image = $image->thumbnail(new Box($config['width'], $config['height']), $mode);
 
-        $image->save( $this->getUploadFilePath( $variationName ) );
+        $options = array(
+            'quality' => $config['quality'],
+        );
+
+        $image->save( $this->getUploadFilePath( $variationName ) , $options );
     }
 
     /**

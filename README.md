@@ -62,8 +62,13 @@ return [
     'projects' => [
         '_original' => false,
         'thumb' => [200, 150, 'inset'],
-        'small' => [300, 200, 'outbound'],
-        'big' => [600, 350, 'outbound'],
+        'small' => [300, 200, 'outbound', 75],
+        'big' => [
+            'width' => 600,
+            'height' => 350,
+            'mode' => 'outbound',
+            'quality' => 75
+        ],
     ],
     'article_header' => [
         '_original' => true,
