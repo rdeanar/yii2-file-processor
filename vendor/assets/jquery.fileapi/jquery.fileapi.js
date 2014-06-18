@@ -104,7 +104,7 @@
 				size: _optDataAttr('size'),
 				name: _optDataAttr('name'),
 				progress: _optDataAttr('progress'),
-				list: ('list'),
+				list: _optDataAttr('list'),
 				file: {
 					tpl: _optDataAttr('file.tpl'),
 					progress: _optDataAttr('file.progress'),
