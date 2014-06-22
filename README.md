@@ -31,28 +31,32 @@ Then run migrations
 Include module into your web config
 
 ```php
-    'modules' => [
-        'fp' => [
-            'class' => 'deanar\fileProcessor\Module',
-            'space_replacement' => '-',
-            'variations_config' => require(__DIR__ . '/file_processor_variations.php'),
-            'upload_dir' => 'uploads',
-        ],
-    ]
+'modules' => [
+    'fp' => [
+        'class' => 'deanar\fileProcessor\Module',
+        'space_replacement' => '-',
+        'variations_config' => require(__DIR__ . '/file_processor_variations.php'),
+        'upload_dir' => 'uploads',
+        'default_quality' => 95,
+        //'default_resize_mod' => 'outbound',
+        //'unlink_files' => true,
+    ],
+]
 ```
 
 Attach behavior to your model
 
 ```php
-    public function behaviors()
-    {
-        return [
-            'fileSequence' => [
-                'class' => \deanar\fileProcessor\behaviours\ConnectFileSequence::className(),
-                'defaultType' => 'projects',
-            ]
-        ];
-    }
+public function behaviors()
+{
+    return [
+        'fileSequence' => [
+            'class' => \deanar\fileProcessor\behaviours\ConnectFileSequence::className(),
+            'defaultType' => 'projects',
+            'deleteTypes' => ['projects', 'files'], // or 'projects, files' as string
+        ]
+    ];
+}
 ```
 
 Create file file_processor_variations.php in config directory and configure image variations like:
@@ -83,59 +87,61 @@ Usage
 Once the extension is installed, simply use it in your form by adding this code to view:
 
 ```php
-    <?= \deanar\fileProcessor\UploadWidget::widget([
-        'type' => 'projects',
-        'type_id' => $model->id,
+<?= \deanar\fileProcessor\UploadWidget::widget([
+    'type' => 'projects',
+    'type_id' => $model->id,
 
-        'options' => [
-            'autoUpload' => true,
-            'multiple' => true,
-            'accept' => 'image/*,application/zip',
-            'duplicate' => false,
-            'maxSize' => '2M', // you can use 'M', 'K', 'G' or simple size in bytes
-            'maxFiles' => 3,
-            'imageSize' => [
-                'minWidth' => 150,
-                'maxWidth' => 2000,
-                'minHeight' => 150,
-                'maxHeight' => 2000,
-            ],
+    'options' => [
+        'autoUpload' => true,
+        'multiple' => true,
+        'accept' => 'image/*,application/zip',
+        'duplicate' => false,
+        'maxSize' => '2M', // you can use 'M', 'K', 'G' or simple size in bytes
+        'maxFiles' => 3,
+        'imageSize' => [
+            'minWidth' => 150,
+            'maxWidth' => 2000,
+            'minHeight' => 150,
+            'maxHeight' => 2000,
         ],
+    ],
 
-    ]) ?>
+]) ?>
 ```
 
 And you can access your images\files by:
 
 ```php
-        $model = Project::findOne(6);
-        $uploads = $model->getFiles();
+$model = Project::findOne(6);
+$uploads = $model->getFiles();
 
-        foreach($uploads as $u){
-            echo $u->imgTag('thumb2', true,['style'=>'border:1px solid red;']);
-        }
+foreach($uploads as $u){
+    echo $u->imgTag('thumb2', true,['style'=>'border:1px solid red;']);
+    //or just url (for files/download links)
+    echo $u->getPublicFileUrl('thumb2', true);
+}
 ```
-or just url (for files/download links)
 
+You can filter files:
 ```php
-echo $u->getPublicFileUrl('thumb2', true);
+$uploads = $model->imagesOnly()->getFiles();
+// or
+$uploads = $model->filesOnly()->getFiles();
 ```
-
 
 You can display your images\files in the GridView.
 
 Add in the column list:
 
 ```php
-     [
-         'class' => 'deanar\fileProcessor\components\ImageColumn',
-         'header' => 'Image',   // optional
-         'empty' => 'No Image', // optional
-         'type' => 'projects',  // optional, default value goes from behavior options
-         'variation' => '_thumb',
-         'htmlOptions' => [] // optional
-     ],
-
+ [
+     'class' => 'deanar\fileProcessor\components\ImageColumn',
+     'header' => 'Image',   // optional
+     'empty' => 'No Image', // optional
+     'type' => 'projects',  // optional, default value goes from behavior options
+     'variation' => '_thumb',
+     'htmlOptions' => [] // optional
+ ],
 ```
 
 You can display list of your images\files anywhere else via DisplayWidget, e.g. in DetailView widget or just in the view.
@@ -143,21 +149,18 @@ You can display list of your images\files anywhere else via DisplayWidget, e.g. 
 Case with DetailView:
 
 ```php
-        'attributes' => [
-            'id',
-            'title',
-            ...
-            [
-                'attribute'=>'Images',
-                'value'=>\deanar\fileProcessor\DisplayWidget::widget(['type'=>'projects','type_id'=>$model->id,'variation'=>'_thumb']),
-                'format'=>'raw',
-            ],
-            ...
-            'text',
-        ],
+'attributes' => [
+    'id',
+    'title',
+    ...
+    [
+        'attribute'=>'Images',
+        'value'=>\deanar\fileProcessor\DisplayWidget::widget(['type'=>'projects','type_id'=>$model->id,'variation'=>'_thumb']),
+        'format'=>'raw',
+    ],
+    ...
+    'text',
+],
 ```
 
 All properties of DisplayWidget are required.
-
-
-
