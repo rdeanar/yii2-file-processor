@@ -20,14 +20,38 @@ class ConnectFileSequence extends Behavior
     const SELECT_FILES = 2;
 
     public $defaultType;
+    public $deleteTypes = [];
     public $selectFileType = self::SELECT_ALL;
+
+    public function init(){
+        if( is_string($this->deleteTypes) ){
+            $this->deleteTypes = empty($this->deleteTypes) ? [] : array_filter(explode(',', str_replace(' ', '', $this->deleteTypes)));
+        }
+    }
 
     public function events()
     {
         return [
             ActiveRecord::EVENT_AFTER_INSERT => 'updateSequence',
-            //TODO add after delete action for delte all connected pictures (don't know how yet)
+            ActiveRecord::EVENT_BEFORE_DELETE => 'deleteSequence',
         ];
+    }
+
+    public function deleteSequence($event)
+    {
+        $type_id = $this->owner->id;
+        $types = $this->deleteTypes;
+
+        $files = Uploads::find()->where([
+                'type' => $types,
+                'type_id' => $type_id,
+            ]
+        )->all();
+
+        foreach($files as $file){
+            /** @var Uploads $file */
+            $file->removeFile();
+        }
     }
 
     public function updateSequence($event){
@@ -77,8 +101,4 @@ class ConnectFileSequence extends Behavior
     public function getFirstFile($type=null){
         return isset($this->getFiles($type)[0]) ? $this->getFiles($type)[0] : new Uploads();
     }
-
-
-    //TODO add after_delete method for unlink files (or as alternative make console command for cleanup)
-
 }

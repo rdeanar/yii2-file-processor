@@ -18,6 +18,7 @@ class Module extends \yii\base\Module
     public $upload_dir = 'uploads';
     public $default_quality = 95;
     public $default_resize_mod = 'inset';
+    public $unlink_files = true;
 
     /**
      * @inheritdoc
