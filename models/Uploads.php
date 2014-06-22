@@ -34,15 +34,17 @@ use Imagine\Exception\Exception;
 class Uploads extends \yii\db\ActiveRecord
 {
     public $filename_separator = '_';
-    public $upload_dir = ''; // override in init
-    public $default_quality; // override in init
+    public $upload_dir = '';    // override in init
+    public $default_quality;    // override in init
     public $default_resize_mod; // override in init
+    public $unlink_files;       // override in init
 
 
     public function init(){
         $this->upload_dir           = Yii::$app->getModule('fp')->upload_dir;
         $this->default_quality      = Yii::$app->getModule('fp')->default_quality;
         $this->default_resize_mod   = Yii::$app->getModule('fp')->default_resize_mod;
+        $this->unlink_files         = Yii::$app->getModule('fp')->unlink_files;
         parent::init();
     }
 
@@ -144,13 +146,12 @@ class Uploads extends \yii\db\ActiveRecord
     public static function staticRemoveFile($id, $check){
         $file = self::findOne($id);
         if(
-            $check['type'] == $file->type &&
+            $check['type']    == $file->type &&
             $check['type_id'] == $file->type_id
         ){
         return $file->removeFile();
         }
         return false;
-        // TODO Maybe provide fail message
     }
 
     /**
@@ -162,15 +163,24 @@ class Uploads extends \yii\db\ActiveRecord
         $config = Uploads::loadVariationsConfig($this->type);
         $error = false;
 
-        foreach ($config as $variation_name => $variation_config) {
-            if (substr($variation_name, 0, 1) !== '_' || $variation_name == '_thumb') {
-                // delete file
-                // TODO add config value, unlink files from the filesystem or only from database
-                $file = $this->getUploadFilePath( $variation_name );
-                if (file_exists($file)) {
-                    if (!@unlink($file)) {
-                        echo 'Error unlinking file: ' . $file;
-                        $error = true;
+        if ($this->unlink_files) {
+            foreach ($config as $variation_name => $variation_config) {
+
+                if ($variation_name == '_original') {
+                    if (!$variation_config) continue;
+                    $variation_name = 'original';
+                }
+
+                if (substr($variation_name, 0, 1) !== '_' || $variation_name == '_thumb') {
+                    // delete file
+                    $file = $this->getUploadFilePath($variation_name);
+                    if (file_exists($file)) {
+                        if (!@unlink($file)) {
+                            echo 'Error unlinking file: ' . $file;
+                            $error = true;
+                        } else {
+                            echo 'Unlink file: ' . $file . '' . PHP_EOL;
+                        }
                     }
                 }
             }
@@ -179,6 +189,7 @@ class Uploads extends \yii\db\ActiveRecord
         if(!$error){
             return $this->delete() ? true : false;
         }
+        return false;
     }
 
     public static function getMaxOrderValue($type, $type_id, $hash)
