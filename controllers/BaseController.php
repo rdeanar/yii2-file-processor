@@ -4,6 +4,7 @@ namespace deanar\fileProcessor\controllers;
 
 
 use \Yii;
+use yii\helpers\Html;
 use yii\helpers\VarDumper;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
@@ -14,6 +15,11 @@ use deanar\fileProcessor\Module;
 
 // only for tests
 use app\models\Project;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
+use Imagine\Image\Point;
+use Imagine\Image\ImageInterface;
+use Imagine\Exception\Exception;
 
 
 class BaseController extends \yii\web\Controller
@@ -34,6 +40,14 @@ class BaseController extends \yii\web\Controller
             return 'ggg';
         }
 */
+
+
+        $imagine = new Imagine();
+        $image = $imagine->open('testimage.jpg')->thumbnail(new Box(300, 200), ImageInterface::THUMBNAIL_OUTBOUND)->save('testimage2.jpg', array('quality' => 95));
+
+
+
+        return Html::img('testimage2.jpg');
 
         $model = Project::findOne(11);
         $uploads = $model->getFiles();
@@ -69,6 +83,7 @@ class BaseController extends \yii\web\Controller
 
         return $this->render('index');
         */
+        return '';
     }
 
     public function actionRemove()
@@ -152,6 +167,10 @@ class BaseController extends \yii\web\Controller
 
                 $mime = FileHelper::getMimeType($file_temp_name);
 
+                if( is_null($mime)){
+                    $mime = FileHelper::getMimeTypeByExtension($file_real_name);
+                }
+
                 if (strpos($mime, 'image') !== false) {
                     $file_dimensions = getimagesize($file_temp_name);
                 } else {
@@ -163,7 +182,7 @@ class BaseController extends \yii\web\Controller
                 $model->type = $type;
                 $model->type_id = $type_id;
                 $model->hash = $hash;
-                $model->ord = Uploads::getMaxOrderValue($type, $type_id, $hash) + 1; // TODO append to end
+                $model->ord = Uploads::getMaxOrderValue($type, $type_id, $hash) + 1;
                 $model->filename = Uploads::generateBaseFileName($file_real_name);
                 $model->original = $file_real_name;
                 $model->mime = $mime;
@@ -211,11 +230,14 @@ class BaseController extends \yii\web\Controller
     public function actionSort(){
         $sort = Yii::$app->request->post('sort',[]);
         if( !is_array($sort)) return false;
+
         foreach ($sort as $k => $v) {
             $file = Uploads::findOne($v);
+            if(is_null($file)) continue;
             $file->ord = $k;
             $file->save();
         }
+        return '';
     }
 
 }
