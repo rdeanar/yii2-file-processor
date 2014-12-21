@@ -28,67 +28,15 @@ class BaseController extends \yii\web\Controller
 
     public function actionIndex()
     {
-
-        //return $mime = FileHelper::getMimeType('/Applications/MAMP/htdocs/loqa.dev/web/uploads/projects/538a1acdbedf8.jpg', null, true );
-
-        /*
-        if (function_exists("finfo_open")) {
-            return VarDumper::dumpAsString(get_defined_functions());
-            //return VarDumper::dumpAsString($mime);
-        } else {
-            function hui(){ }
-            return 'ggg';
-        }
-*/
-
-
         $imagine = new Imagine();
         $image = $imagine->open('testimage.jpg')->thumbnail(new Box(300, 200), ImageInterface::THUMBNAIL_OUTBOUND)->save('testimage2.jpg', array('quality' => 95));
-
-
-
         return Html::img('testimage2.jpg');
-
-        $model = Project::findOne(11);
-        $uploads = $model->getFiles();
-
-        foreach ($uploads as $u) {
-            /**
-             * @var $u Uploads
-             */
-            echo $u->id . $u->imgTag('preview', true, ['style' => 'border:1px solid red;']);
-//            echo $u->getPublicFileUrl('thumb2', true);
-        }
-
-        //echo $model->id;
-
-        //return VarDumper::dumpAsString($model);
-        //return $model->id.'--';
-        /*
-
-                $model->setProp2('SSSSS');
-
-                return $model->foo();
-                return $model->getProp2();
-        */
-        /*
-        $op = new MimeTypeExtensions();
-        //var_dump($op->get_type_by_ext("txt"));
-        var_dump($op->get_ext_by_type("application/octet-stream"));
-
-
-        //return uniqid('sdasdasdas',false);
-        return VarDumper::dumpAsString( Uploads::loadVariationsConfig('projects') );
-        //return VarDumper::dumpAsString($this->module->variations_config);
-
         return $this->render('index');
-        */
         return '';
     }
 
     public function actionRemove()
     {
-
         // TODO check for POST request
 
         $id = Yii::$app->request->post('id');
