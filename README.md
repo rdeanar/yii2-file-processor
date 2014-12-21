@@ -129,6 +129,11 @@ $uploads = $model->imagesOnly()->getFiles();
 $uploads = $model->filesOnly()->getFiles();
 ```
 
+You can fetch first file in the row:
+```php
+$uploads = $model->getFirstFile();
+```
+
 You can display your images\files in the GridView.
 
 Add in the column list:
