@@ -53,7 +53,7 @@ class Uploads extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'fp_uploads';
+        return '{{%fp_uploads}}';
     }
 
     /**
