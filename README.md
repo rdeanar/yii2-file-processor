@@ -53,7 +53,7 @@ public function behaviors()
         'fileSequence' => [
             'class' => \deanar\fileProcessor\behaviours\ConnectFileSequence::className(),
             'defaultType' => 'projects',
-            'deleteTypes' => ['projects', 'files'], // or 'projects, files' as string
+            'registeredTypes' => ['projects', 'files'], // or 'projects, files' as string
         ]
     ];
 }

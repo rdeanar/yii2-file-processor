@@ -10,8 +10,9 @@ namespace deanar\fileProcessor;
 use \Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
-use deanar\fileProcessor\models;
+use deanar\fileProcessor\models\Uploads;
 use deanar\fileProcessor\assets\UploadAssets;
+use deanar\fileProcessor\helpers\FileHelper;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 
@@ -58,13 +59,51 @@ class UploadWidget extends \yii\base\Widget
             if( !in_array($option_name, $this->options_allowed)) continue;
 
             if($option_name == 'maxSize'){
-                $option_value = models\Uploads::sizeToBytes($option_value);
+                $option_value = FileHelper::sizeToBytes($option_value);
             }
 
             $return .= $option_name . ' : ' . json_encode($option_value) . ',' . PHP_EOL;
         }
         return $return;
     }
+
+
+    /**
+     * Return array of already uploaded files. Used for display uploads in update form.
+     * @param $type
+     * @param $type_id
+     * @return array
+     */
+    public function getAlreadyUploadedByReference($type, $type_id)
+    {
+        if (is_null($type_id)) return [];
+
+        $uploads = array();
+
+        $array = Uploads::findByReference($type, $type_id);
+
+        foreach ($array as $item) {
+            /**
+             * @var $item Uploads
+             */
+            array_push($uploads,
+                array(
+                    'src' => $item->getPublicFileUrl('_thumb'),
+                    'type' => $item->mime,
+                    'name' => $item->original,
+                    'size' => $item->size,
+                    'data' => array(
+                        'id' => $item->id,
+                        'type' => $item->type,
+                        'type_id' => $item->type_id,
+                    )
+                ));
+        }
+
+        return $uploads;
+    }
+
+
 
     /**
      * Renders the widget.
@@ -80,7 +119,7 @@ class UploadWidget extends \yii\base\Widget
             Yii::$app->request->csrfParam => Yii::$app->request->getCsrfToken(),
         ));
 
-        $alreadyUploadedFiles = Json::encode(models\Uploads::getUploadsStack($this->type, $this->type_id));
+        $alreadyUploadedFiles = Json::encode($this->getAlreadyUploadedByReference($this->type, $this->type_id));
 
 
         $fileApiInitSettings = <<<EOF

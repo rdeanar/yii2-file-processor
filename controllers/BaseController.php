@@ -11,6 +11,7 @@ use yii\web\UploadedFile;
 use dosamigos\transliterator\TransliteratorHelper;
 use deanar\fileProcessor\vendor\FileAPI;
 use deanar\fileProcessor\models\Uploads;
+use deanar\fileProcessor\helpers\VariationHelper;
 use deanar\fileProcessor\Module;
 
 // only for tests
@@ -24,7 +25,6 @@ use Imagine\Exception\Exception;
 
 class BaseController extends \yii\web\Controller
 {
-    //public $enableCsrfValidation = false;
 
     public function actionIndex()
     {
@@ -54,8 +54,6 @@ class BaseController extends \yii\web\Controller
 
     public function actionUpload()
     {
-        //Yii::$app->getRequest()->enableCsrfValidation = false;
-
         if (!empty($_SERVER['HTTP_ORIGIN'])) {
             // Enable CORS
             header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
@@ -142,10 +140,13 @@ class BaseController extends \yii\web\Controller
                 if ($model->save()) {
 
                     // load configuration
-                    $config = Uploads::loadVariationsConfig($model->type);
+                    $config = VariationHelper::getConfigOfType($model->type);
 
                     // upload and process variations
                     $model->process($file_temp_name, $config);
+
+                    // insert id of uploaded file into attribute in model (if needed)
+                    Uploads::updateConnectedModelAttribute($config, $model->type_id, $model->id);
 
                     $images[$name] = [
                         'width' => $model->width,

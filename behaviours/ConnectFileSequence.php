@@ -8,6 +8,7 @@
 
 namespace deanar\fileProcessor\behaviours;
 
+use deanar\fileProcessor\helpers\VariationHelper;
 use deanar\fileProcessor\models\Uploads;
 use yii;
 use yii\base\Behavior;
@@ -20,30 +21,31 @@ class ConnectFileSequence extends Behavior
     const SELECT_FILES = 2;
 
     public $defaultType;
-    public $deleteTypes = [];
+    public $registeredTypes = [];
     public $selectFileType = self::SELECT_ALL;
 
     public function init(){
-        if( is_string($this->deleteTypes) ){
-            $this->deleteTypes = empty($this->deleteTypes) ? [] : array_filter(explode(',', str_replace(' ', '', $this->deleteTypes)));
+        if( is_string($this->registeredTypes) ){
+            $this->registeredTypes = empty($this->registeredTypes) ? [] : array_filter(explode(',', str_replace(' ', '', $this->registeredTypes)));
         }
     }
 
     public function events()
     {
         return [
-            ActiveRecord::EVENT_AFTER_INSERT => 'updateSequence',
-            ActiveRecord::EVENT_BEFORE_DELETE => 'deleteSequence',
+            ActiveRecord::EVENT_AFTER_UPDATE    => 'updateFileIdInOwnerModel',
+            ActiveRecord::EVENT_AFTER_INSERT    => 'updateSequence',
+            ActiveRecord::EVENT_BEFORE_DELETE   => 'deleteSequence',
         ];
     }
 
     public function deleteSequence($event)
     {
         $type_id = $this->owner->id;
-        $types = $this->deleteTypes;
+        $types = $this->registeredTypes;
 
         $files = Uploads::find()->where([
-                'type' => $types,
+                'type' => $types, // Array of types or single type as string
                 'type_id' => $type_id,
             ]
         )->all();
@@ -61,7 +63,38 @@ class ConnectFileSequence extends Behavior
         foreach($hashes as $hash){
             Uploads::updateAll(['type_id' => $type_id], 'hash=:hash', [':hash' => $hash]);
         }
+
+        $this->updateFileIdInOwnerModel($event);
     }
+
+    public function updateFileIdInOwnerModel($event){
+        $type_id = $this->owner->getAttribute('id');
+
+        $configs = VariationHelper::getRawConfig();
+        foreach($configs as $type => $config){
+            if( ! in_array($type, $this->registeredTypes) ) continue;
+
+            if (isset($config['_insert'])) {
+                $attribute = array_shift($config['_insert']);
+
+                $files = Uploads::findByReference($type, $type_id);
+
+                if(!is_null($files)){
+                    $file = array_shift($files);
+
+                    if($this->owner->getAttribute($attribute) !== $file->id) {
+                        $this->owner->setAttribute($attribute, $file->id);
+                        $this->owner->save(); // one more loop
+                    }
+                }
+            }
+        }
+
+    }
+
+    /*
+     * Access methods
+     */
 
     public function imagesOnly(){
         $this->selectFileType = self::SELECT_IMAGES;

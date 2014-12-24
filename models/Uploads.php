@@ -7,6 +7,8 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use deanar\fileProcessor\helpers\FileHelper;
+use deanar\fileProcessor\helpers\VariationHelper;
 
 use Imagine\Gd\Imagine;
 //use Imagine\Image;
@@ -35,15 +37,10 @@ class Uploads extends \yii\db\ActiveRecord
 {
     public $filename_separator = '_';
     public $upload_dir = '';    // override in init
-    public $default_quality;    // override in init
-    public $default_resize_mod; // override in init
     public $unlink_files;       // override in init
-
 
     public function init(){
         $this->upload_dir           = Yii::$app->getModule('fp')->upload_dir;
-        $this->default_quality      = Yii::$app->getModule('fp')->default_quality;
-        $this->default_resize_mod   = Yii::$app->getModule('fp')->default_resize_mod;
         $this->unlink_files         = Yii::$app->getModule('fp')->unlink_files;
         parent::init();
     }
@@ -99,42 +96,13 @@ class Uploads extends \yii\db\ActiveRecord
         return !is_null($this->width);
     }
 
-    public static function getUploads($type, $type_id){
+    public static function findByReference($type, $type_id){
         if (is_null($type_id)) return [];
 
         return self::find()
             ->where(['type' => $type, 'type_id' => $type_id])
             ->orderBy('ord')
             ->all();
-    }
-
-    public static function getUploadsStack($type, $type_id)
-    {
-        if (is_null($type_id)) return [];
-
-        $uploads = array();
-
-        $array = self::getUploads($type, $type_id);
-
-        foreach ($array as $item) {
-            /**
-             * @var $item Uploads
-             */
-            array_push($uploads,
-                array(
-                    'src' => $item->getPublicFileUrl('_thumb'),
-                    'type' => $item->mime,
-                    'name' => $item->original,
-                    'size' => $item->size,
-                    'data' => array(
-                        'id' => $item->id,
-                        'type' => $item->type,
-                        'type_id' => $item->type_id,
-                    )
-                ));
-        }
-
-        return $uploads;
     }
 
     /**
@@ -160,7 +128,7 @@ class Uploads extends \yii\db\ActiveRecord
      * Remove file from file system and database
      */
     public function removeFile(){
-        $config = Uploads::loadVariationsConfig($this->type);
+        $config = VariationHelper::getConfigOfType($this->type);
         $error = false;
 
         if ($this->unlink_files) {
@@ -186,10 +154,31 @@ class Uploads extends \yii\db\ActiveRecord
             }
         }
 
+        // clear attribute value in model (if needed)
+        Uploads::updateConnectedModelAttribute($config, $this->type_id, null);
+
         if(!$error){
             return $this->delete() ? true : false;
         }
         return false;
+    }
+
+    /**
+     * Update attribute value of model (if needed).
+     * Used for insertion <id> of uploaded file in case of single file upload
+     * @param $config array
+     * @param $model_pk integer
+     * @param $value integer
+     */
+    public static function updateConnectedModelAttribute($config, $model_pk, $value){
+        if (isset($config['_insert'])) {
+            $keys = array_keys($config['_insert']);
+            $className = array_shift($keys);
+            $attribute = array_shift($config['_insert']);
+            if( class_exists($className)) {
+                $className::updateAll([$attribute => $value], [$className::primaryKey()[0] => $model_pk]);
+            }
+        }
     }
 
     public static function getMaxOrderValue($type, $type_id, $hash)
@@ -209,32 +198,17 @@ class Uploads extends \yii\db\ActiveRecord
     }
 
 
-    public static function loadVariationsConfig($type)
-    {
-        // TODO set default variation instead of '_origial'
-        $config = Yii::$app->getModule('fp')->variations_config;
-
-        if (!array_key_exists($type, $config)) {
-            $return = isset($config['_default']) ? $config['_default'] : array();
-        } else {
-            $return = $config[$type];
-        }
-
-        $all = isset($config['_all']) ? $config['_all'] : array();
-
-        return ArrayHelper::merge($all,$return);
-    }
 
 
     public function process($file_temp_name, $config=null){
-        if( is_null($config) ) $config = Uploads::loadVariationsConfig($this->type);
+        if( is_null($config) ) $config = VariationHelper::getConfigOfType($this->type);
 
-        $image = $this->isImage();
+        $is_image = $this->isImage();
 
-        if ( !$image || ( isset($config['_original']) && $config['_original'] === true ) ){
+        if ( !$is_image || ( isset($config['_original']) && $config['_original'] === true ) ){
             $upload_dir = $this->getUploadDir($this->type);
 
-            if(!is_dir($upload_dir) ) mkdir($upload_dir, 0777, true); // TODO maybe add yii function for creating dirs
+            if(!is_dir($upload_dir) ) mkdir($upload_dir, 0777, true);
 
             $upload_full_path = $upload_dir . DIRECTORY_SEPARATOR . $this->filename;
 
@@ -245,7 +219,7 @@ class Uploads extends \yii\db\ActiveRecord
             $upload_full_path = $file_temp_name;
         }
 
-        if(!$image) return true;
+        if(!$is_image) return true;
 
 
         try {
@@ -271,45 +245,6 @@ class Uploads extends \yii\db\ActiveRecord
     } // end of process
 
 
-    /**
-     * @param array $variationConfig
-     * @return array
-     */
-    public function normalizeVariationConfig($variationConfig){
-        $config = array();
-        $arrayIndexed = ArrayHelper::isIndexed($variationConfig);
-        $argumentCount = count($variationConfig);
-        $defaultMode = $this->default_resize_mod;
-
-        if ($arrayIndexed) {
-            $config['width'] = $variationConfig[0];
-            $config['height'] = $variationConfig[1];
-            if ($argumentCount > 2) {
-                $config['mode'] = in_array($variationConfig[2], array('inset', 'outbound')) ? $variationConfig[2] : $defaultMode;
-            }
-            if ($argumentCount > 3) {
-                $config['quality'] = is_numeric($variationConfig[3]) ? $variationConfig[3] : $this->default_quality;
-            }
-
-        } else {
-            $config['width'] = $variationConfig['width'];
-            $config['height'] = $variationConfig['height'];
-            $config['mode'] = in_array($variationConfig['mode'], array('inset', 'outbound')) ? $variationConfig['mode'] : $defaultMode;
-            if( isset($config['quality']) )
-                $config['quality'] =  is_numeric($config['quality']) ? $config['quality']  : $this->default_quality;
-            // fill color for resize mode fill in (inset variation)
-            //$config['watermark'] = $variationConfig['watermark'];
-            // watermark position
-            // crop
-            // rotate
-            // etc
-        }
-
-        if (!isset($config['mode']))    $config['mode']    = $defaultMode;
-        if (!isset($config['quality'])) $config['quality'] = $this->default_quality;
-
-        return $config;
-    }
 
     /**
      * @param $image
@@ -322,7 +257,7 @@ class Uploads extends \yii\db\ActiveRecord
     public function makeVariation($image, $variationName, $variationConfig){
         if( !is_array($variationConfig)) return false;
 
-        $config = $this->normalizeVariationConfig($variationConfig);
+        $config = VariationHelper::normalizeVariationConfig($variationConfig);
 
         // here because in normalizeVariationConfig we don't process variation name
         if($variationName == '_thumb'){
@@ -362,7 +297,7 @@ class Uploads extends \yii\db\ActiveRecord
      * Get upload path to file
      */
     public function getUploadFilePath($variation='original'){
-        return $this->getUploadDir($this->type) . DIRECTORY_SEPARATOR . $this->getFilename($variation);
+        return $this->getUploadDir($this->type) . DIRECTORY_SEPARATOR . $this->getFilenameByVariation($variation);
     }
 
 
@@ -374,7 +309,7 @@ class Uploads extends \yii\db\ActiveRecord
      * Get Public file url
      */
     public function getPublicFileUrl($variation='original', $absolute=false){
-        return Url::base($absolute) . '/' . $this->upload_dir . '/' . $this->type . '/' . $this->getFilename($variation);
+        return Url::base($absolute) . '/' . $this->upload_dir . '/' . $this->type . '/' . $this->getFilenameByVariation($variation);
     }
 
     /**
@@ -383,7 +318,7 @@ class Uploads extends \yii\db\ActiveRecord
      *
      *  Get variation filename
     */
-    public function getFilename($variation='original'){
+    public function getFilenameByVariation($variation='original'){
         if(empty($this->filename)) return '';
         //TODO make file name template
         if($variation == 'original'){
@@ -394,10 +329,6 @@ class Uploads extends \yii\db\ActiveRecord
     }
 
 
-    public static function extractExtensionName($filename){
-        return pathinfo($filename, PATHINFO_EXTENSION);
-    }
-
     /**
      * @param $filename
      * @return string
@@ -406,10 +337,18 @@ class Uploads extends \yii\db\ActiveRecord
      */
     public static function generateBaseFileName($filename){
         //TODO perhaps check extension and mime type compatibility
-        return uniqid().'.'.self::extractExtensionName($filename);
+        return uniqid() . '.' . FileHelper::extractExtensionName($filename);
     }
 
 
+    /**
+     * Returns <img> tag as string by variation name
+     *
+     * @param string $variation
+     * @param bool $absolute
+     * @param array $options
+     * @return string
+     */
     public function imgTag($variation='original', $absolute=false,$options=array()){
         //TODO return 'empty' value if no image available
         if( empty($this->filename) ) return '';
@@ -419,28 +358,4 @@ class Uploads extends \yii\db\ActiveRecord
     }
 
 
-    /**
-     * Converts php.ini style size to bytes
-     *
-     * @param string $sizeStr $sizeStr
-     * @return int
-     */
-    public static function sizeToBytes($sizeStr)
-    {
-        // used decimal, not binary
-        $kilo = 1000;
-        switch (substr($sizeStr, -1)) {
-            case 'M':
-            case 'm':
-                return (int) $sizeStr * $kilo * $kilo;
-            case 'K':
-            case 'k':
-                return (int) $sizeStr * $kilo;
-            case 'G':
-            case 'g':
-                return (int) $sizeStr * $kilo * $kilo * $kilo;
-            default:
-                return (int) $sizeStr;
-        }
-    }
 }

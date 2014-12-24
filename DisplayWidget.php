@@ -8,7 +8,7 @@
 namespace deanar\fileProcessor;
 
 use \Yii;
-use deanar\fileProcessor\models;
+use deanar\fileProcessor\models\Uploads;
 use deanar\fileProcessor\assets\DisplayWidgetAssets;
 
 
@@ -33,7 +33,7 @@ class DisplayWidget extends \yii\base\Widget
 
         $asset = DisplayWidgetAssets::register($this->getView());
 
-        $uploads = models\Uploads::getUploads($this->type, $this->type_id);
+        $uploads = Uploads::findByReference($this->type, $this->type_id);
         return $this->render('display_widget', [
             'uploads'     => $uploads,
             'variation'   => $this->variation,
