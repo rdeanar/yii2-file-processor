@@ -1,6 +1,8 @@
 File Processor (Yii2 Extension)
 ==============
-Upload and process files and images
+Upload and process files and images.
+
+Based on jquery.fileapi [Link to github](https://github.com/RubaXa/jquery.fileapi)
 
 Installation
 ------------
@@ -78,6 +80,15 @@ return [
         '_original' => true,
         'thumb' => [200, 150, 'inset'],
     ],
+    'avatar_picture' => [
+        '_original' => true,
+        'preview' => [200, 200, 'outbound'],
+        
+        // For single file uploads. Automatically will be updated 'avatar' attribute in 'Project' model
+        // with <id> of currently uploaded file
+        '_insert' => ['app\models\Project' => 'avatar']  
+    ],
+    
 ];
 ```
 
@@ -169,3 +180,12 @@ Case with DetailView:
 ```
 
 All properties of DisplayWidget are required.
+
+
+TODOs
+-----
+- Special widget for single file uploads;
+- Internationalization
+- Crop and other features of jquery.fileapi
+- API for upload files by url or by path
+- Refactoring
