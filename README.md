@@ -98,7 +98,7 @@ Usage
 Once the extension is installed, simply use it in your form by adding this code to view:
 
 ```php
-<?= \deanar\fileProcessor\UploadWidget::widget([
+<?= \deanar\fileProcessor\widgets\UploadWidget::widget([
     'type' => 'projects',
     'type_id' => $model->id,
 
@@ -171,7 +171,7 @@ Case with DetailView:
     ...
     [
         'attribute'=>'Images',
-        'value'=>\deanar\fileProcessor\DisplayWidget::widget(['type'=>'projects','type_id'=>$model->id,'variation'=>'_thumb']),
+        'value'=>\deanar\fileProcessor\widgets\DisplayWidget::widget(['type'=>'projects','type_id'=>$model->id,'variation'=>'_thumb']),
         'format'=>'raw',
     ],
     ...

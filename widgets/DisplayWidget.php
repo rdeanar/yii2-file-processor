@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace deanar\fileProcessor;
+namespace deanar\fileProcessor\widgets;
 
 use \Yii;
 use deanar\fileProcessor\models\Uploads;
