@@ -10,7 +10,7 @@
             </div>
         </div>
 
-        <div class="b-upload__hint">Добавить файлы в очередь загрузки</div>
+        <div class="b-upload__hint">Add files to upload queue</div>
 
         <ul class="clearfix js-files b-upload__files" id="tstdnd">
 

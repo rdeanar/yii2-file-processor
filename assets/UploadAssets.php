@@ -11,7 +11,7 @@ class UploadAssets extends AssetBundle
 		'jquery.fileapi/FileAPI/FileAPI.exif.js',
 		'jquery.fileapi/jquery.fileapi.js',
 
-        'Sortable/Sortable.js'
+        'Sortable/Sortable.js',
 	];
 	public $css = [
 		'jquery.fileapi/statics/main.css',
