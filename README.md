@@ -185,6 +185,7 @@ All properties of DisplayWidget are required.
 TODOs
 -----
 - Special widget for single file uploads;
+- Access control system
 - Internationalization
 - Crop and other features of jquery.fileapi
 - API for upload files by url or by path
