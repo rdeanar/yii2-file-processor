@@ -116,6 +116,21 @@ Sort function of selected files.
 Filter function of selected files, eg: `function (file, info){ return /^image/.test(file.type) && info.width > 320 }`.
 
 
+### imageTransform`:Object`
+Rules of changes the original image on the client (see [details](https://github.com/mailru/FileAPI#imagetransformobject)).
+```js
+imageTransform: {
+	// resize by max side
+	maxWidth: 800,
+	maxHeight: 600
+}
+```
+
+
+### imageOriginal`:Boolean`
+Sent to the server the original image or not, if defined imageTransform option.
+
+
 ### elements`:Object`
 ```js
 // Default options
@@ -357,11 +372,11 @@ $('#userpic').fileapi({
 $('#upload').fileapi({
 	multiple: true,
 
-	// Restores the list of files uploaded earlier.
+	// Restores the list of files uploaded earlier *** IE < 9 — NOT SUPPORTED ***
 	files: [{
 		src: "http://path/to/filename.png",
 		type: "image/png",
-		name: "filename.png"
+		name: "filename.png",
 		size: 31409,
 		data: { id: 999, token: "..." }
 	}],
@@ -414,6 +429,32 @@ $('#upload').fileapi({
 
 ---
 
+## Using with Bootstrap
+
+You can use this uploader with Bootstrap framework without writing much additional CSS. Just add the following CSS to your page to hide the browser's "browse" button:
+
+```css
+#id-of-uploader .btn {
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	overflow: hidden;
+}
+
+#id-of-uploader .btn input {
+	top: -10px;
+	right: -40px;
+	z-index: 2;
+	position: absolute;
+	cursor: pointer;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	font-size: 50px;
+}
+```
+
+
+---
 
 
 ## MIT LICENSE
@@ -444,6 +485,34 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ## Changelog
+
+### 0.4.6
+ * FileAPI up to 2.0.9
+ * #12: `onRemoveCompleted` -> `onFileRemoveCompleted`
+ * #100: fixed `maxSize` option
+
+### 0.4.5
+ * #95: fixed `rotate` method
+ * #94: fixed `redraw` method
+
+### 0.4.4
+ * #93: `files` option and userpic
+ * #90: fixed rotate + imageAutoOrientation
+
+### 0.4.3
+ * #84: fixed modal.js
+ * #82: clear(all: true)
+ * #61: always parse result (dataType === 'json')
+
+### 0.4.2
+ * #73: git -> gif (fixed typo)
+
+### 0.4.1
+ * #67: `resize` method
+ * #63: `remove` method
+ * - console.log
+ * `modal` close
+
 ### 0.4.0
 * #57: + `onBeforeUpload` event
 * support `disabled` dom-attribute
