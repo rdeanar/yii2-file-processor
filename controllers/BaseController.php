@@ -7,6 +7,7 @@ use \Yii;
 use yii\helpers\Html;
 use yii\helpers\VarDumper;
 use yii\helpers\FileHelper;
+use yii\web\BadRequestHttpException;
 use yii\web\UploadedFile;
 use dosamigos\transliterator\TransliteratorHelper;
 use deanar\fileProcessor\vendor\FileAPI;
@@ -39,9 +40,13 @@ class BaseController extends \yii\web\Controller
     {
         // TODO check for POST request
 
-        $id = Yii::$app->request->post('id');
-        $type = Yii::$app->request->post('type');
-        $type_id = Yii::$app->request->post('type_id');
+        $id = Yii::$app->request->post('id', null);
+        $type = Yii::$app->request->post('type', null);
+        $type_id = Yii::$app->request->post('type_id', null);
+
+        foreach(['id','type','type_id'] as $param){
+            if(is_null($$param)) throw new BadRequestHttpException('Missing required parameter: ' . $param);
+        }
 
         $success = Uploads::staticRemoveFile($id, compact('type', 'type_id'));
 

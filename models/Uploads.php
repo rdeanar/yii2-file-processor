@@ -16,6 +16,7 @@ use Imagine\Image\Box;
 use Imagine\Image\Point;
 use Imagine\Image\ImageInterface;
 use Imagine\Exception\Exception;
+use yii\web\BadRequestHttpException;
 
 /**
  * This is the model class for table "fp_uploads".
@@ -107,12 +108,14 @@ class Uploads extends \yii\db\ActiveRecord
 
     /**
      * @param $id
+     * @param $check
      * @return bool
      *
      * Static call function removeFile
      */
     public static function staticRemoveFile($id, $check){
         $file = self::findOne($id);
+        if(is_null($file)) return false;
         if(
             $check['type']    == $file->type &&
             $check['type_id'] == $file->type_id
