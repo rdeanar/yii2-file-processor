@@ -12,7 +12,7 @@
 
         <div class="b-upload__hint">Add files to upload queue</div>
 
-        <ul class="clearfix js-files b-upload__files" id="tstdnd">
+        <ul class="clearfix js-files b-upload__files">
 
             <li class="js-file-tpl b-thumb js-sort" data-id="<%=uid%>" title="<%-name%>, <%-sizeText%>">
                 <div data-fileapi="file.remove" class="b-thumb__del">✖</div>

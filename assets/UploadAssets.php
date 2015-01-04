@@ -10,11 +10,12 @@ class UploadAssets extends AssetBundle
 		'jquery.fileapi/FileAPI/FileAPI.min.js',
 		'jquery.fileapi/FileAPI/FileAPI.exif.js',
 		'jquery.fileapi/jquery.fileapi.js',
-
+		'jquery.fileapi/jcrop/jquery.Jcrop.min.js',
+		'jquery.fileapi/statics/jquery.modal.js',
         'Sortable/Sortable.js',
 	];
 	public $css = [
-		'jquery.fileapi/statics/main.css',
+		'jquery.fileapi/jcrop/jquery.Jcrop.min.css',
 	];
 
     public $depends = [

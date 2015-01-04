@@ -9,7 +9,7 @@ class DisplayWidgetAssets extends AssetBundle
 	public $js = [
 	];
 	public $css = [
-		'css/fileProcessor.css',
+		'css/fp_display.css',
 	];
 
     public $depends = [

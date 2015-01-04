@@ -9,8 +9,10 @@ class BaseAssets extends AssetBundle
 	public $js = [
 		'js/fp_base.js',
 		'js/fp_multi_upload.js',
+		'js/fp_single_upload.js',
 	];
 	public $css = [
+		'css/fp_upload.css'
 	];
 
     public $depends = [
