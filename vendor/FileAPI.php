@@ -1,10 +1,8 @@
-<?
+<?php
 
 namespace deanar\fileProcessor\vendor;
 
-use yii\base\Object;
-
-class FileAPI extends Object
+class FileAPI
 {
     const OK = 200;
     const ERROR = 500;
