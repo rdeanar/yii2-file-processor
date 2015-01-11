@@ -8,12 +8,10 @@ use yii\helpers\Html;
 use yii\helpers\VarDumper;
 use yii\helpers\FileHelper;
 use yii\web\BadRequestHttpException;
-use yii\web\UploadedFile;
-use dosamigos\transliterator\TransliteratorHelper;
+use yii\filters\VerbFilter;
 use deanar\fileProcessor\vendor\FileAPI;
 use deanar\fileProcessor\models\Uploads;
 use deanar\fileProcessor\helpers\VariationHelper;
-use deanar\fileProcessor\Module;
 
 // only for tests
 use app\models\Project;
@@ -27,6 +25,21 @@ use Imagine\Exception\Exception;
 class BaseController extends \yii\web\Controller
 {
 
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'remove' => ['post', 'delete'],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $imagine = new Imagine();
@@ -38,8 +51,6 @@ class BaseController extends \yii\web\Controller
 
     public function actionRemove()
     {
-        // TODO check for POST request
-
         $id = Yii::$app->request->post('id', null);
         $type = Yii::$app->request->post('type', null);
         $type_id = Yii::$app->request->post('type_id', null);
