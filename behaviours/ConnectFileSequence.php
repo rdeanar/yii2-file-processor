@@ -22,9 +22,14 @@ class ConnectFileSequence extends Behavior
 
     public $defaultType;
     public $registeredTypes = [];
+    public $deleteTypes = []; // for back compatibility
     public $selectFileType = self::SELECT_ALL;
 
     public function init(){
+        if(empty($this->registeredTypes)){ //TODO for back compatibility. Remove in next release.
+            $this->registeredTypes = $this->deleteTypes;
+        }
+
         if( is_string($this->registeredTypes) ){
             $this->registeredTypes = empty($this->registeredTypes) ? [] : array_filter(explode(',', str_replace(' ', '', $this->registeredTypes)));
         }
