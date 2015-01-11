@@ -20,9 +20,6 @@ class m140516_113603_create_file_storage_table extends \yii\db\Migration
             'width' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
             'height' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
         ]);
-
-        $this->createIndex('type_type_id', '{{%fp_uploads}}', ['type', 'type_id']);
-        $this->createIndex('type_hash', '{{%fp_uploads}}', ['type', 'hash']);
     }
 
     public function down()
