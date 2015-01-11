@@ -109,8 +109,10 @@ Usage
 
 Once the extension is installed, simply use it in your form by adding this code to view:
 
+Multi upload widget:
+
 ```php
-<?= \deanar\fileProcessor\widgets\UploadWidget::widget([
+<?= \deanar\fileProcessor\widgets\MultiUploadWidget::widget([
     'type' => 'projects',
     'type_id' => $model->id,
 
@@ -132,7 +134,37 @@ Once the extension is installed, simply use it in your form by adding this code 
 ]) ?>
 ```
 
-And you can access your images\files by:
+Single upload widget:
+
+```php
+<?= \deanar\fileProcessor\widgets\SingleUploadWidget::widget([
+    'type' => 'projects',
+    'type_id' => $model->id,
+
+    'crop' => true,
+    'preview' => true,
+
+    'options' => [
+        'accept' => 'image/*',
+        'maxSize' => '2M', // you can use 'M', 'K', 'G' or simple size in bytes
+        'maxFiles' => 3,
+        'imageSize' => [
+            'minWidth' => 150,
+            'maxWidth' => 2000,
+            'minHeight' => 150,
+            'maxHeight' => 2000,
+        ],
+    ],
+
+]) ?>
+```
+
+If 'preview' set to false, 'crop' automatically set to false and will be very simple upload widget.
+If crop set to true, 'accept' option automatically set to 'image/*'.
+For single upload without crop, 'autoUpload' automatically set to true.
+
+
+You can access your images\files by:
 
 ```php
 $model = Project::findOne(6);
@@ -196,9 +228,11 @@ All properties of DisplayWidget are required.
 
 TODOs
 -----
-- Special widget for single file uploads;
+- Special widget for single file uploads
 - Access control system
 - Internationalization
+- More customization
 - Crop and other features of jquery.fileapi
 - API for upload files by url or by path
+- Beautiful alerts (e.g. http://rubaxa.github.io/Ply/)
 - Refactoring

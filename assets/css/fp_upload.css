@@ -45,7 +45,7 @@
 
 
 .webcam,
-.userpic {
+.fp_single_upload {
     width: 200px;
     height: 200px;
     border: 0px solid #aaa;
@@ -57,7 +57,7 @@
     text-align: center;
 }
 .webcam .btn,
-.userpic .btn {
+.fp_single_upload .btn {
     margin-top: 150px;
 }
 
@@ -263,7 +263,7 @@
 }
 
 
-.userpic .btn {
+.fp_single_upload .btn {
     margin-top: 150px;
 }
 
@@ -364,7 +364,7 @@
     display: inline-block;
 }
 
-.userpic .js-delete{
+.fp_single_upload .js-delete{
     color: red;
     position: absolute;
     right: 2px;
@@ -375,6 +375,15 @@
     opacity: 0.5;
 }
 
-.userpic .js-delete:hover {
+.fp_single_simple_upload .js-delete {
+    color: red;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 22px;
+    opacity: 0.5;
+}
+
+.fp_single_upload .js-delete:hover,
+.fp_single_simple_upload  .js-delete:hover {
     opacity: 1;
 }

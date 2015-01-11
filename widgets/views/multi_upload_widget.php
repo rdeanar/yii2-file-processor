@@ -1,4 +1,10 @@
-<div id="<?=$identifier?>" class="b-upload b-upload_multi">
+<?
+/**
+ * @author Mikhail Razumovskiy <rdeanar@gmail.com>
+ */
+?>
+
+<div id="<?=$identifier?>" class="b-upload fp_multi_upload">
 
     <input type="hidden" name="fp_hash[]" value="<?=$hash?>"/>
 

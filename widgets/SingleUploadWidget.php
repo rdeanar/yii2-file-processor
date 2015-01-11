@@ -18,11 +18,25 @@ use yii\helpers\Url;
 
 class SingleUploadWidget extends BaseUploadWidget
 {
-    private $options_allowed = ['autoUpload', 'accept', 'duplicate', 'maxSize', 'maxFiles', 'imageSize'];
+    public $crop = true;
+    public $preview = true;
+
+    private $options_allowed = ['autoUpload', 'accept', 'maxSize', 'imageSize'];
 
     public function init()
     {
         parent::init();
+
+        $this->crop     = (bool)$this->crop;
+        $this->preview  = (bool)$this->preview;
+
+        if($this->crop) {
+            $this->preview = true;
+            $this->options['accept'] = 'image/*';
+        }else{
+            // without crop control
+            $this->options['autoUpload'] = true;
+        }
     }
 
     private function generateOptionsArray(){
@@ -66,6 +80,8 @@ class SingleUploadWidget extends BaseUploadWidget
             'additionalData'        => $additionalData,
             'alreadyUploadedFiles'  => $this->getAlreadyUploadedByReference($this->type, $this->type_id, 'original'),
             'options'               => $this->generateOptionsArray(),
+            'crop'                  => $this->crop,
+            'preview'               => $this->preview,
         ]);
 
         $fileApiInitSettings = <<<EOF
@@ -81,13 +97,20 @@ EOF;
         $this->getView()->registerJs($fileApiInitSettings);
         $this->getView()->registerJs($fileApiRun);
 
-            return $this->render('single_upload_widget', array(
-                'hash' => $this->hash,
+        $params = array(
+            'hash'       => $this->hash,
 
-                'identifier' => $this->identifier,
-                'uploadUrl' => $this->uploadUrl,
-                'multiple' => $this->multiple,
-            ));
+            'identifier' => $this->identifier,
+            'uploadUrl'  => $this->uploadUrl,
+            'multiple'   => $this->multiple,
+            'crop'       => $this->crop,
+            'preview'    => $this->preview,
+        );
+        if($this->preview === false) {
+            return $this->render('single_upload_widget_simple', $params);
+        }else{
+            return $this->render('single_upload_widget', $params);
+        }
     }
 
 }

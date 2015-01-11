@@ -14,6 +14,8 @@ file_processor.single_upload = function (settings) {
      'additionalData'        => {},
      'alreadyUploadedFiles'  => [],
      'options'               => {},
+     'crop'                  => true,
+     'preview'               => true
      }
      */
 
@@ -26,7 +28,6 @@ file_processor.single_upload = function (settings) {
 
             var files_length = uploadContainer.fileapi('widget').files.length-1;
             for (var file=files_length; file >= 0; file--){
-
                 delete_array.push([uploadContainer.fileapi('widget').files[file]]);
             }
 
@@ -70,11 +71,8 @@ file_processor.single_upload = function (settings) {
                 alert('Your browser does not support Flash :(');
             }
             else if( file ){
-                var tst = true;
 
-                    //console.log( $.modal.noConflict() );
                     var bootstrap = true;
-
                     if (bootstrap) {
 
                         var modal_html = $('#fp_single_upload_modal_bs').html();
@@ -158,6 +156,17 @@ file_processor.single_upload = function (settings) {
     };
 
     $.extend(fileapi_options, settings.options);
+
+    if(!settings.crop)
+        delete fileapi_options.onSelect;
+
+    if(!settings.preview)
+        fileapi_options.elements = {
+            //ctrl: { upload: '.js-send', reset: '.js-reset' }, // maybe later
+            name: '.js-name',
+            size: '.js-size',
+            empty: { show: '.js-browse', hide: '.js-info, .js-delete' }
+        };
 
     uploadContainer.fileapi(fileapi_options);
 };

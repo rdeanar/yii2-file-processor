@@ -1,25 +1,34 @@
-<div id="<?=$identifier?>" class="userpic">
+<?
+/**
+* @author Mikhail Razumovskiy <rdeanar@gmail.com>
+*/
+?>
 
-    <input type="hidden" name="fp_hash[]" value="<?=$hash?>"/>
+<div id="<?= $identifier ?>" class="fp_single_upload">
 
-        <div class="js-preview userpic__preview"></div>
+    <input type="hidden" name="fp_hash[]" value="<?= $hash ?>"/>
+
+    <div class="js-preview userpic__preview"></div>
 
     <div class="js-delete" style="display: none;">✖</div>
 
 
-            <div class="btn btn-success js-browse" style="display: none;">
-                <span class="btn-txt">Choose</span>
-                <input type="file" name="filedata">
-            </div>
-            <div class="process js-upload" style="display: none;">
-                <div class="progress progress-success"><div class="js-progress bar"></div></div>
-                <span class="btn-txt">Uploading</span>
-            </div>
+    <div class="btn btn-success js-browse" style="display: none;">
+        <span class="btn-txt">Choose</span>
+        <input type="file" name="filedata">
+    </div>
+    <div class="process js-upload" style="display: none;">
+        <div class="progress progress-success">
+            <div class="js-progress bar"></div>
+        </div>
+        <span class="btn-txt">Uploading</span>
+    </div>
 
 </div>
 
 <hr/>
 
+<? if($crop){ ?>
 <script type="text/template" id="fp_single_upload_modal_bs">
 <div class="modal" id="<?=$identifier?>_modal">
     <div class="modal-dialog">
@@ -40,10 +49,16 @@
 </div><!-- /.modal -->
 </script>
 
-
+<?
+ /*
+ //for jquery.modal plugin
 <div id="popup" class="popup" style="display: none;">
     <div class="popup__body"><div class="js-img"></div></div>
     <div style="margin: 0 0 5px; text-align: center;">
         <div class="js-upload btn btn_browse btn_browse_small">Upload</div>
     </div>
 </div>
+ */
+?>
+
+<? } //if crop ?>
