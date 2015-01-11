@@ -92,6 +92,18 @@ return [
 ];
 ```
 
+
+Upgrade instruction
+-------------------
+
+Run migrations
+
+```bash
+ ./yii migrate/up --migrationPath=@deanar/fileProcessor/migrations
+```
+
+In ConnectFileSequence behaviour replace 'deleteTypes' property to 'registeredTypes'. 
+
 Usage
 -----
 
