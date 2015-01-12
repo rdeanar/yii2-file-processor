@@ -1,11 +1,10 @@
-File Processor (Yii2 Extension)
-==============
+# File Processor (Yii2 Extension)
+
 Upload and process files and images.
 
 Based on jquery.fileapi [Link to github](https://github.com/RubaXa/jquery.fileapi)
 
-Installation
-------------
+## Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
@@ -61,7 +60,7 @@ public function behaviors()
 }
 ```
 
-Create file file_processor_variations.php in config directory and configure image variations like:
+Create file `file_processor_variations.php` in config directory and configure image variations like:
 
 ```php
 return [
@@ -93,8 +92,7 @@ return [
 ```
 
 
-Upgrade instruction
--------------------
+## Upgrade instruction
 
 Run migrations
 
@@ -102,12 +100,11 @@ Run migrations
  ./yii migrate/up --migrationPath=@deanar/fileProcessor/migrations
 ```
 
-In ConnectFileSequence behaviour replace 'deleteTypes' property to 'registeredTypes'. 
+In ConnectFileSequence behaviour replace `deleteTypes` property to `registeredTypes`. 
 
-Usage
------
+## Usage
 
-Once the extension is installed, simply use it in your form by adding this code to view:
+Once the extension is installed, simply use it in your form by adding widget code to view:
 
 Multi upload widget:
 
@@ -159,12 +156,13 @@ Single upload widget:
 ]) ?>
 ```
 
-If 'preview' set to false, 'crop' automatically set to false and will be very simple upload widget.
-If crop set to true, 'accept' option automatically set to 'image/*'.
-For single upload without crop, 'autoUpload' automatically set to true.
+If `preview` set to false, `crop` automatically set to false and will be very simple upload widget.
+If crop set to true, `accept` option automatically set to 'image/*'.
+For single upload without crop, `autoUpload` automatically set to true.
 
 To setup size of window and minimum size of crop area use `previewSize` property. Default is [200,200].  
 
+---
 
 You can access your images\files by:
 
@@ -191,7 +189,7 @@ You can fetch first file in the row:
 $uploads = $model->getFirstFile();
 ```
 
-You can display your images\files in the GridView.
+You can display your images\files in the `GridView`.
 
 Add in the column list:
 
@@ -206,9 +204,9 @@ Add in the column list:
  ],
 ```
 
-You can display list of your images\files anywhere else via DisplayWidget, e.g. in DetailView widget or just in the view.
+You can display list of your images\files anywhere else via `DisplayWidget`, e.g. in `DetailView` widget or just in the view.
 
-Case with DetailView:
+Case with `DetailView`:
 
 ```php
 'attributes' => [
@@ -228,8 +226,8 @@ Case with DetailView:
 All properties of DisplayWidget are required.
 
 
-TODOs
------
+## TODOs
+
 - Special widget for single file uploads
 - Access control system
 - Internationalization
