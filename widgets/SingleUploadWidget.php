@@ -21,6 +21,8 @@ class SingleUploadWidget extends BaseUploadWidget
     public $crop = true;
     public $preview = true;
 
+    public $previewSize = [200, 200];
+
     private $options_allowed = ['autoUpload', 'accept', 'maxSize', 'imageSize'];
 
     public function init()
@@ -37,6 +39,20 @@ class SingleUploadWidget extends BaseUploadWidget
             // without crop control
             $this->options['autoUpload'] = true;
         }
+
+        if(is_array($this->previewSize) && count($this->previewSize) >= 2){
+            $normalizePreviewSize = function($value) {
+                $value = intval($value);
+                if($value < 50 OR $value > 500){
+                    $value = 200;
+                }
+                return $value;
+            };
+            $this->previewSize = array_map($normalizePreviewSize, $this->previewSize);
+        }else{
+            $this->previewSize = [200, 200];
+        }
+
     }
 
     private function generateOptionsArray(){
@@ -82,6 +98,7 @@ class SingleUploadWidget extends BaseUploadWidget
             'options'               => $this->generateOptionsArray(),
             'crop'                  => $this->crop,
             'preview'               => $this->preview,
+            'previewSize'           => $this->previewSize,
         ]);
 
         $fileApiInitSettings = <<<EOF

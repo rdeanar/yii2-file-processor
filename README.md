@@ -143,11 +143,11 @@ Single upload widget:
 
     'crop' => true,
     'preview' => true,
+    'previewSize' => [200,200],
 
     'options' => [
         'accept' => 'image/*',
         'maxSize' => '2M', // you can use 'M', 'K', 'G' or simple size in bytes
-        'maxFiles' => 3,
         'imageSize' => [
             'minWidth' => 150,
             'maxWidth' => 2000,
@@ -162,6 +162,8 @@ Single upload widget:
 If 'preview' set to false, 'crop' automatically set to false and will be very simple upload widget.
 If crop set to true, 'accept' option automatically set to 'image/*'.
 For single upload without crop, 'autoUpload' automatically set to true.
+
+To setup size of window and minimum size of crop area use `previewSize` property. Default is [200,200].  
 
 
 You can access your images\files by:

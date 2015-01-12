@@ -13,11 +13,11 @@
     <div class="js-delete" style="display: none;">✖</div>
 
 
-    <div class="btn btn-success js-browse" style="display: none;">
+    <div class="btn btn-success js-browse js-controls" style="display: none;">
         <span class="btn-txt">Choose</span>
         <input type="file" name="filedata">
     </div>
-    <div class="process js-upload" style="display: none;">
+    <div class="process js-upload js-controls" style="display: none;">
         <div class="progress progress-success">
             <div class="js-progress bar"></div>
         </div>

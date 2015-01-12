@@ -21,6 +21,11 @@ file_processor.single_upload = function (settings) {
 
     var uploadContainer = $('#' + settings.identifier);
 
+    uploadContainer.width(settings.previewSize[0]);
+    uploadContainer.height(settings.previewSize[1]);
+
+    uploadContainer.find('.js-controls').css('margin-top', Math.min(parseInt(settings.previewSize[1] * (167 / 200) - 17), settings.previewSize[1] - 40));
+
     uploadContainer.find('div.js-delete').on('click', function(){
 
         var delete_array = [];
@@ -57,8 +62,8 @@ file_processor.single_upload = function (settings) {
 
             preview: {
                 el: '.js-preview',
-                width: 200,
-                height: 200
+                width: settings.previewSize[0],
+                height: settings.previewSize[1]
             },
             progress: '.js-progress'
         },
@@ -93,7 +98,7 @@ file_processor.single_upload = function (settings) {
                                 file: file,
                                 bgColor: '#fff',
                                 maxSize: [$(window).width() - 100, $(window).height() - 100],
-                                minSize: [200, 200],
+                                minSize: settings.previewSize,
                                 selection: '90%',
                                 onSelect: function (coords) {
                                     uploadContainer.fileapi('crop', file, coords);
