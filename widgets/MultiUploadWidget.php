@@ -83,7 +83,7 @@ class MultiUploadWidget extends BaseUploadWidget
 
         $fileApiInitSettings = <<<EOF
         var FileAPI = {
-            debug: false, media: true, staticPath: '$upload_asset->baseUrl', 'url' : '$this->uploadUrl'
+            debug: false, media: true, staticPath: '$upload_asset->baseUrl/jquery.fileapi/FileAPI/', 'url' : '$this->uploadUrl'
         };
 EOF;
 
