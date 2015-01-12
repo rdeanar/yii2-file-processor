@@ -68,8 +68,9 @@ file_processor.single_upload = function (settings) {
             progress: '.js-progress'
         },
         onSelect: function (evt, ui){
-            //console.log(evt);
-            //console.log(ui);
+
+            file_processor.showValidationErrors(evt, ui);
+
             var file = ui.files[0];
 
             if( !FileAPI.support.transform ) {
@@ -163,7 +164,9 @@ file_processor.single_upload = function (settings) {
     $.extend(fileapi_options, settings.options);
 
     if(!settings.crop)
-        delete fileapi_options.onSelect;
+        fileapi_options.onSelect = function(evt, ui){
+            file_processor.showValidationErrors(evt, ui);
+        };
 
     if(!settings.preview)
         fileapi_options.elements = {

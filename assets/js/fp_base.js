@@ -5,12 +5,22 @@
 
 
 var file_processor = file_processor || {
-        showValidationErrors: function (file) {
+        showValidationErrors: function(evt, data){
+            setTimeout(function () { // do not remember why i use timeout, maybe error do not raised without it
+                $(data.all).each(function (i, file) {
+                    if (file.$el === undefined) {
+                        file_processor.showValidationErrorsByFile(file);
+                    } else {
+                        file.$el.removeClass('js-sort');
+                    }
+                });
+            }, 300);
+        },
+
+        showValidationErrorsByFile: function (file) {
             var errors = file.errors;
 
             if (errors === undefined) return true;
-
-            //console.log('error list:', errors);
 
             // count and size
             if (errors.maxFiles)  this.raiseError('Can not add file "' + file.name + '". Too much files.');
@@ -38,5 +48,5 @@ var file_processor = file_processor || {
             var i = Math.floor(Math.log(bytes) / Math.log(k));
             return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
         }
-    }
+    };
 

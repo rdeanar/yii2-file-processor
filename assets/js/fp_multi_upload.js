@@ -29,15 +29,7 @@ file_processor.multi_upload = function (settings) {
 
         // Events
         onSelect: function (evt, data) {
-            var to = setTimeout(function () {
-                $(data.all).each(function (i, file) {
-                    if (file.$el === undefined) {
-                        file_processor.showValidationErrors(file);
-                    } else {
-                        file.$el.removeClass('js-sort');
-                    }
-                });
-            }, 300);
+            file_processor.showValidationErrors(evt, data);
         },
 
         // Remove a file from the upload queue
@@ -55,6 +47,7 @@ file_processor.multi_upload = function (settings) {
             file.$el.addClass('js-sort');
 
             if (images === undefined) {
+                // TODO display more error details
                 file_processor.raiseError('Error uploading');
                 uploadContainer.fileapi("remove", file);
             } else {
