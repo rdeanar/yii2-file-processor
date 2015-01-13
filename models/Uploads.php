@@ -10,13 +10,11 @@ use yii\helpers\ArrayHelper;
 use deanar\fileProcessor\helpers\FileHelper;
 use deanar\fileProcessor\helpers\VariationHelper;
 
-use Imagine\Gd\Imagine;
-//use Imagine\Image;
+use Imagine\Image;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
 use Imagine\Image\ImageInterface;
 use Imagine\Exception\Exception;
-use yii\web\BadRequestHttpException;
 
 /**
  * This is the model class for table "fp_uploads".
@@ -36,13 +34,20 @@ use yii\web\BadRequestHttpException;
  */
 class Uploads extends \yii\db\ActiveRecord
 {
+    const IMAGE_DRIVER_GD       = 1;
+    const IMAGE_DRIVER_IMAGICK  = 2;
+    const IMAGE_DRIVER_GMAGICK  = 3;
+
     public $filename_separator = '_';
     public $upload_dir = '';    // override in init
     public $unlink_files;       // override in init
 
+    public $image_driver = self::IMAGE_DRIVER_GD;
+
     public function init(){
         $this->upload_dir           = Yii::$app->getModule('fp')->upload_dir;
         $this->unlink_files         = Yii::$app->getModule('fp')->unlink_files;
+        $this->image_driver         = Yii::$app->getModule('fp')->image_driver;
         parent::init();
     }
 
@@ -226,13 +231,17 @@ class Uploads extends \yii\db\ActiveRecord
 
 
         try {
-            $imagine = new Imagine();
-
-            /*
-            $imagine = new Imagine\Gd\Imagine();
-            $imagine = new Imagine\Imagick\Imagine();
-            $imagine = new Imagine\Gmagick\Imagine();
-            */
+            switch($this->image_driver){
+                case self::IMAGE_DRIVER_IMAGICK:
+                    $imagine = new \Imagine\Imagick\Imagine();
+                    break;
+                case self::IMAGE_DRIVER_GMAGICK:
+                    $imagine = new \Imagine\Gmagick\Imagine();
+                    break;
+                default: //case self::IMAGE_DRIVER_GD:
+                    $imagine = new \Imagine\Gd\Imagine();
+                    break;
+            }
 
             $image = $imagine->open($upload_full_path);
 
@@ -241,8 +250,9 @@ class Uploads extends \yii\db\ActiveRecord
                     $this->makeVariation($image, $variation_name, $variation_config);
                 }
             }
-        } catch (Imagine\Exception\Exception $e) {
+        } catch (\Imagine\Exception\Exception $e) {
             // handle the exception
+            //echo $e->getMessage();
         }
 
     } // end of process

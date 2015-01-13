@@ -35,6 +35,7 @@ Include module into your web config
 'modules' => [
     'fp' => [
         'class' => 'deanar\fileProcessor\Module',
+        'image_driver' => \deanar\fileProcessor\models\Uploads::IMAGE_DRIVER_GD,
         'space_replacement' => '-',
         'variations_config' => require(__DIR__ . '/file_processor_variations.php'),
         'upload_dir' => 'uploads',
@@ -236,3 +237,9 @@ All properties of DisplayWidget are required.
 - API for upload files by url or by path
 - Beautiful alerts (e.g. http://rubaxa.github.io/Ply/)
 - Refactoring
+
+
+## Changelog
+
+### 0.1.0 (2015-01-xx)
+  * First tagged version.
