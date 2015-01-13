@@ -115,19 +115,29 @@ EOF;
         $this->getView()->registerJs($fileApiRun);
 
         $params = array(
-            'hash'       => $this->hash,
+            'hash'          => $this->hash,
 
-            'identifier' => $this->identifier,
-            'uploadUrl'  => $this->uploadUrl,
-            'multiple'   => $this->multiple,
-            'crop'       => $this->crop,
-            'preview'    => $this->preview,
+            'identifier'    => $this->identifier,
+            'uploadUrl'     => $this->uploadUrl,
+            'multiple'      => $this->multiple,
+            'crop'          => $this->crop,
+            'preview'       => $this->preview,
+            'htmlOptions'   => $this->getHtmlOptionsWithBaseClasses($this->isSimple() ? ['fp_single_simple_upload'] : ['fp_single_upload']),
         );
-        if($this->preview === false) {
+
+        if($this->isSimple()) {
             return $this->render('single_upload_widget_simple', $params);
         }else{
             return $this->render('single_upload_widget', $params);
         }
+    }
+
+    /**
+     * @return bool
+     * With or without preview (simple)
+     */
+    public function isSimple(){
+        return $this->preview === false;
     }
 
 }

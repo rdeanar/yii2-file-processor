@@ -18,7 +18,6 @@ use yii\helpers\Url;
 class MultiUploadWidget extends BaseUploadWidget
 {
     public $sortUrl = null;
-
     public $multiple = true;
 
     private $options_allowed = ['autoUpload', 'multiple', 'accept', 'duplicate', 'maxSize', 'maxFiles', 'imageSize'];
@@ -95,11 +94,11 @@ EOF;
         $this->getView()->registerJs($fileApiRun);
 
         return $this->render('multi_upload_widget', array(
-            'hash' => $this->hash,
-
-            'identifier' => $this->identifier,
-            'uploadUrl' => $this->uploadUrl,
-            'multiple' => $this->multiple,
+            'hash'          => $this->hash,
+            'identifier'    => $this->identifier,
+            'uploadUrl'     => $this->uploadUrl,
+            'multiple'      => $this->multiple,
+            'htmlOptions'   => $this->getHtmlOptionsWithBaseClasses(['b-upload', 'fp_multi_upload']),
         ));
     }
 

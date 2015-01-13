@@ -128,6 +128,11 @@ Multi upload widget:
             'maxHeight' => 2000,
         ],
     ],
+    
+    'htmlOptions' => [
+        'class'          => 'additional-class'
+        'data-attribute' => 'value',
+    ],
 
 ]) ?>
 ```
@@ -152,6 +157,11 @@ Single upload widget:
             'minHeight' => 150,
             'maxHeight' => 2000,
         ],
+    ],
+
+    'htmlOptions' => [
+        'class'          => 'additional-class'
+        'data-attribute' => 'value',
     ],
 
 ]) ?>

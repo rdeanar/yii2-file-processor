@@ -4,7 +4,7 @@
  */
 ?>
 
-<div id="<?=$identifier?>" class="b-upload fp_multi_upload">
+<?=\yii\helpers\Html::beginTag('div', $htmlOptions)?>
 
     <input type="hidden" name="fp_hash[]" value="<?=$hash?>"/>
 

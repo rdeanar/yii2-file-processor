@@ -4,7 +4,7 @@
  */
 ?>
 
-<div id="<?= $identifier ?>" class="fp_single_simple_upload">
+<?=\yii\helpers\Html::beginTag('div', $htmlOptions)?>
 
     <input type="hidden" name="fp_hash[]" value="<?= $hash ?>"/>
 

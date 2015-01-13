@@ -25,6 +25,7 @@ class BaseUploadWidget extends \yii\base\Widget
     public $multiple = false;
 
     public $options = [];
+    public $htmlOptions = [];
 
     public function init()
     {
@@ -33,6 +34,7 @@ class BaseUploadWidget extends \yii\base\Widget
         $this->uploadUrl   = Url::toRoute('fp/base/upload', true);
         $this->removeUrl   = Url::toRoute('fp/base/remove', true);
         $this->identifier .= '-' . $this->hash;
+        $this->htmlOptions['id'] = $this->identifier;
     }
 
     /**
@@ -69,5 +71,24 @@ class BaseUploadWidget extends \yii\base\Widget
         }
 
         return $uploads;
+    }
+
+    public function getHtmlOptionsWithBaseClasses($base_class_names){
+        if(empty($this->htmlOptions['class'])){
+            $this->htmlOptions['class'] = implode(' ', $base_class_names);
+        }else {
+            $this->htmlOptions['class'] = str_replace('  ', ' ',
+                implode(' ',
+                    array_unique(
+                        array_merge(
+                            $base_class_names,
+                            explode(' ', $this->htmlOptions['class'])
+                        )
+                    )
+                )
+            );
+        }
+
+        return $this->htmlOptions;
     }
 }
