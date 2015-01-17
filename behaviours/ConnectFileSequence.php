@@ -9,6 +9,7 @@
 namespace deanar\fileProcessor\behaviours;
 
 use deanar\fileProcessor\helpers\VariationHelper;
+use deanar\fileProcessor\helpers\AccessControl;
 use deanar\fileProcessor\models\Uploads;
 use yii;
 use yii\base\Behavior;
@@ -46,7 +47,7 @@ class ConnectFileSequence extends Behavior
 
     public function deleteSequence($event)
     {
-        $type_id = $this->owner->id;
+        $type_id = $this->owner->getAttribute('id');
         $types = $this->registeredTypes;
 
         $files = Uploads::find()->where([
@@ -62,11 +63,24 @@ class ConnectFileSequence extends Behavior
     }
 
     public function updateSequence($event){
-        $type_id = $this->owner->id;
+        $type_id = $this->owner->getAttribute('id');
         $hashes = Yii::$app->request->post('fp_hash');
 
         foreach($hashes as $hash){
-            Uploads::updateAll(['type_id' => $type_id], 'hash=:hash', [':hash' => $hash]);
+            // fetch one record to determine `type` of upload
+            $uploadExample = Uploads::find()->select(['type'])->where(['hash' => $hash])->one();
+            if(count($uploadExample) > 0) {
+                $type = $uploadExample->getAttribute('type');
+                $acl = VariationHelper::getAclOfType($type);
+
+                if(AccessControl::checkAccess($acl, $type_id)) {
+                    // all right, attach uploads
+                    Uploads::updateAll(['type_id' => $type_id], 'hash=:hash', [':hash' => $hash]);
+                }else{
+                    // no access, delete uploaded files
+                    Uploads::deleteAll('hash=:hash', [':hash' => $hash]);
+                }
+            }
         }
 
         $this->updateFileIdInOwnerModel($event);

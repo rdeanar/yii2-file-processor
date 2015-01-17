@@ -12,6 +12,7 @@ use yii\filters\VerbFilter;
 use deanar\fileProcessor\vendor\FileAPI;
 use deanar\fileProcessor\models\Uploads;
 use deanar\fileProcessor\helpers\VariationHelper;
+use deanar\fileProcessor\helpers\AccessControl;
 
 // only for tests
 use app\models\Project;
@@ -20,6 +21,7 @@ use Imagine\Image\Box;
 use Imagine\Image\Point;
 use Imagine\Image\ImageInterface;
 use Imagine\Exception\Exception;
+use yii\web\ForbiddenHttpException;
 
 
 class BaseController extends \yii\web\Controller
@@ -119,6 +121,14 @@ class BaseController extends \yii\web\Controller
             $type = Yii::$app->request->post('type');
             $type_id = Yii::$app->request->post('type_id');
             $hash = Yii::$app->request->post('hash');
+
+            // if `$type_id` is null, then access check must be only in ConnectFileSequence behaviour
+            if (!is_null($type_id)) {
+                $acl = VariationHelper::getAclOfType($type);
+                if (!AccessControl::checkAccess($acl, $type_id)) {
+                    throw new ForbiddenHttpException('You have no access to perform this upload');
+                }
+            }
 
             // file info
             $file_temp_name = $files['tmp_name'];

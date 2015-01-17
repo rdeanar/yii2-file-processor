@@ -44,6 +44,25 @@ class VariationHelper {
     }
 
     /**
+     * Get Access Control settings for given type from variation config
+     * @param $type
+     * @return null
+     */
+    public static function getAclOfType($type){
+        $config = self::getRawConfig();
+
+        if (!array_key_exists($type, $config)) {
+            return null;
+        } else {
+            $config_of_type = $config[$type];
+        }
+
+        if(array_key_exists('_acl',$config_of_type)){
+            return $config_of_type['_acl'];
+        }
+    }
+
+    /**
      * @param array $variationConfig
      * @return array
      */

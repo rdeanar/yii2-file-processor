@@ -86,7 +86,17 @@ return [
         
         // For single file uploads. Automatically will be updated 'avatar' attribute in 'Project' model
         // with <id> of currently uploaded file
-        '_insert' => ['app\models\Project' => 'avatar']  
+        '_insert' => ['app\models\Project' => 'avatar']
+        
+        // variants of access control definitions          
+        '_acl'       => '*', // * - all users, like without _acl
+        '_acl'       => '@', // @ - authenticated users only
+        '_acl'       => ['users' => ['admin', 'user1']], // defined list of users
+        '_acl'       => ['app\models\Project' => 'user_id'], // if current user id equals to `user_id` attribute of model `app\models\Project`
+        '_acl'       => function ($model, $user_id) { // callable check
+            return $model->avatar == $user_id;
+        },
+          
     ],
     
 ];
