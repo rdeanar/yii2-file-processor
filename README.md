@@ -93,8 +93,8 @@ return [
         '_acl'       => '@', // @ - authenticated users only
         '_acl'       => ['users' => ['admin', 'user1']], // defined list of users
         '_acl'       => ['app\models\Project' => 'user_id'], // if current user id equals to `user_id` attribute of model `app\models\Project`
-        '_acl'       => function ($model, $user_id) { // callable check
-            return $model->avatar == $user_id;
+        '_acl'       => function ($type_id, $user_id) { // callable check
+            return \app\models\Project::findOne($type_id)->user_id == $user_id;
         },
           
     ],
