@@ -27,6 +27,8 @@ class BaseUploadWidget extends \yii\base\Widget
     public $options = [];
     public $htmlOptions = [];
 
+    public $debug;
+
     public function init()
     {
         parent::init();
@@ -35,6 +37,8 @@ class BaseUploadWidget extends \yii\base\Widget
         $this->removeUrl   = Url::toRoute('fp/base/remove', true);
         $this->identifier .= '-' . $this->hash;
         $this->htmlOptions['id'] = $this->identifier;
+
+        $this->debug       = Yii::$app->getModule('fp')->debug ? 'true' : 'false';
     }
 
     /**

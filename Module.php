@@ -13,6 +13,8 @@ use yii\web\ForbiddenHttpException;
 
 class Module extends \yii\base\Module
 {
+    public $debug = false;
+
     public $image_driver;
     public $space_replacement = '_';
     public $variations_config = [];

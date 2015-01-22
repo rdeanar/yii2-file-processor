@@ -7,6 +7,7 @@
 
 namespace deanar\fileProcessor\widgets;
 
+use deanar\fileProcessor\helpers\AccessControl;
 use \Yii;
 use yii\helpers\Json;
 use deanar\fileProcessor\assets\UploadAssets;
@@ -82,7 +83,7 @@ class MultiUploadWidget extends BaseUploadWidget
 
         $fileApiInitSettings = <<<EOF
         var FileAPI = {
-            debug: false, media: true, staticPath: '$upload_asset->baseUrl/jquery.fileapi/FileAPI/', 'url' : '$this->uploadUrl'
+            debug: $this->debug, media: true, staticPath: '$upload_asset->baseUrl/jquery.fileapi/FileAPI/', 'url' : '$this->uploadUrl'
         };
 EOF;
 

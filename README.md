@@ -42,6 +42,7 @@ Include module into your web config
         'default_quality' => 95,
         //'default_resize_mod' => 'outbound',
         //'unlink_files' => true,
+        'debug' => true, // FileAPI debug. false by default
     ],
 ]
 ```
@@ -249,14 +250,14 @@ All properties of DisplayWidget are required.
 
 ## TODOs
 
-- Special widget for single file uploads
-- Access control system
-- Internationalization
-- More customization
-- Crop and other features of jquery.fileapi
-- API for upload files by url or by path
-- Beautiful alerts (e.g. http://rubaxa.github.io/Ply/)
-- Refactoring
+- Special widget for single file uploads [****-]
+- Access control system [****-]
+- Internationalization [-----]
+- More customization [**---]
+- Crop and other features of jquery.fileapi [***--]
+- API for upload files by url or by path [-----]
+- Beautiful alerts (e.g. http://rubaxa.github.io/Ply/) [-----]
+- Refactoring [*----]
 
 
 ## Changelog
