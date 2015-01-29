@@ -8,7 +8,7 @@ Based on jquery.fileapi [Link to github](https://github.com/RubaXa/jquery.fileap
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-Either run (not ready yet)
+Either run
 
 ```
 php composer.phar require --prefer-dist deanar/yii2-file-processor "*"
@@ -20,7 +20,7 @@ or add
 "deanar/yii2-file-processor": "*"
 ```
 
-to the require section of your `composer.json` file;
+to the require section of your `composer.json` file and update composer dependencies;
 
 
 Then run migrations
@@ -248,7 +248,7 @@ Case with `DetailView`:
 All properties of DisplayWidget are required.
 
 
-## TODOs
+## TODOs and progress
 
 - Special widget for single file uploads [****-]
 - Access control system [****-]
@@ -256,6 +256,10 @@ All properties of DisplayWidget are required.
 - More customization [**---]
 - Crop and other features of jquery.fileapi [***--]
 - API for upload files by url or by path [-----]
+- Console commands for generating new image variations [-----]
+- Mode for generating image variations on the fly [-----]
+- Mode for generating image variations in background [-----]
+- Advanced variation features: watermarks, cropping, rotation etc. [*----]
 - Beautiful alerts (e.g. http://rubaxa.github.io/Ply/) [-----]
 - Refactoring [*----]
 
