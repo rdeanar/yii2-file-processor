@@ -44,20 +44,27 @@ file_processor.multi_upload = function (settings) {
             var file = uiEvt.file;
             var images = uiEvt.result.images;
 
-            file.$el.addClass('js-sort');
-
-            if (images === undefined) {
-                // TODO display more error details
-                file_processor.raiseError('Error uploading');
+            if (images === undefined || images.length < 1) {
+                if(FileAPI.debug){
+                    if(uiEvt.result.errors === undefined){
+                        file_processor.raiseError('Error while uploading: ' + uiEvt.error);
+                    }else {
+                        file_processor.raiseError('Error while uploading: ' + uiEvt.result.errors.join(', '));
+                    }
+                }else{
+                    file_processor.raiseError('Error while uploading');
+                }
                 uploadContainer.fileapi("remove", file);
             } else {
-                var json = images.filedata;
+                var filedata = images.filedata;
 
                 file.data = {
-                    id: json.id,
-                    type: json.type,
-                    type_id: json.type_id
+                    id: filedata.id,
+                    type: filedata.type,
+                    type_id: filedata.type_id
                 };
+
+                file.$el.addClass('js-sort');
             }
         },
 

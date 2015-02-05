@@ -9,11 +9,10 @@ namespace deanar\fileProcessor\widgets;
 
 use \Yii;
 use yii\helpers\Json;
-use deanar\fileProcessor\models\Uploads;
+use yii\web\View;
 use deanar\fileProcessor\assets\UploadAssets;
 use deanar\fileProcessor\assets\BaseAssets;
 use deanar\fileProcessor\helpers\FileHelper;
-use yii\helpers\Url;
 
 
 class SingleUploadWidget extends BaseUploadWidget
@@ -111,7 +110,7 @@ EOF;
         file_processor.single_upload($settingsJson);
 EOF;
 
-        $this->getView()->registerJs($fileApiInitSettings);
+        $this->getView()->registerJs($fileApiInitSettings, View::POS_HEAD);
         $this->getView()->registerJs($fileApiRun);
 
         $params = array(

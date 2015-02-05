@@ -143,9 +143,18 @@ file_processor.single_upload = function (settings) {
             var file = uiEvt.file;
             var images = uiEvt.result.images;
 
-            if (images === undefined) {
-                file_processor.raiseError('Error uploading');
+            if (images === undefined || images.length < 1) {
+                if(FileAPI.debug){
+                    if(uiEvt.result.errors === undefined){
+                        file_processor.raiseError('Error while uploading: ' + uiEvt.error);
+                    }else {
+                        file_processor.raiseError('Error while uploading: ' + uiEvt.result.errors.join(', '));
+                    }
+                }else{
+                    file_processor.raiseError('Error while uploading');
+                }
                 uploadContainer.fileapi("remove", file);
+                uploadContainer.find('.js-preview').empty();
             } else {
                 var json = images.filedata;
 

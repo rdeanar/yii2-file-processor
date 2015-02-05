@@ -3,6 +3,7 @@
 namespace deanar\fileProcessor\models;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -152,10 +153,10 @@ class Uploads extends \yii\db\ActiveRecord
                     $file = $this->getUploadFilePath($variation_name);
                     if (file_exists($file)) {
                         if (!@unlink($file)) {
-                            echo 'Error unlinking file: ' . $file;
+                            Yii::warning('Can not unlink file: ' . $file, 'file-processor');
                             $error = true;
                         } else {
-                            echo 'Unlink file: ' . $file . '' . PHP_EOL;
+                            Yii::trace('Unlinked file: ' . $file, 'file-processor');
                         }
                     }
                 }
@@ -209,6 +210,8 @@ class Uploads extends \yii\db\ActiveRecord
 
 
     public function process($file_temp_name, $config=null){
+        $errors = [];
+
         if( is_null($config) ) $config = VariationHelper::getConfigOfType($this->type);
 
         $is_image = $this->isImage();
@@ -220,14 +223,14 @@ class Uploads extends \yii\db\ActiveRecord
 
             $upload_full_path = $upload_dir . DIRECTORY_SEPARATOR . $this->filename;
 
-            if (move_uploaded_file($file_temp_name, $upload_full_path)) {
-                // cool
+            if (!move_uploaded_file($file_temp_name, $upload_full_path)) {
+                array_push($errors, 'Can not move uploaded file.');
             }
         }else{
             $upload_full_path = $file_temp_name;
         }
 
-        if(!$is_image) return true;
+        if(!$is_image) return $errors;
 
 
         try {
@@ -247,14 +250,18 @@ class Uploads extends \yii\db\ActiveRecord
 
             foreach ($config as $variation_name => $variation_config) {
                 if (substr($variation_name, 0, 1) !== '_' || $variation_name == '_thumb') {
-                    $this->makeVariation($image, $variation_name, $variation_config);
+                    $errors = array_merge(
+                        $errors,
+                        $this->makeVariation($image, $variation_name, $variation_config)
+                    );
                 }
             }
         } catch (\Imagine\Exception\Exception $e) {
             // handle the exception
-            //echo $e->getMessage();
+            array_push($errors, $e->getMessage());
         }
 
+        return $errors;
     } // end of process
 
 
@@ -263,12 +270,13 @@ class Uploads extends \yii\db\ActiveRecord
      * @param $image
      * @param $variationName
      * @param $variationConfig
-     * @return bool
+     * @return array
      *
      * Resize images by variation config
      */
     public function makeVariation($image, $variationName, $variationConfig){
-        if( !is_array($variationConfig)) return false;
+        $errors = [];
+        if( !is_array($variationConfig)) return ['Variation config must be an array'];
 
         $config = VariationHelper::normalizeVariationConfig($variationConfig);
 
@@ -289,7 +297,16 @@ class Uploads extends \yii\db\ActiveRecord
             'quality' => $config['quality'],
         );
 
-        $image->save( $this->getUploadFilePath( $variationName ) , $options );
+        // PHP Fatal Error 'yii\base\ErrorException' with message 'Allowed memory size of 33554432 bytes exhausted (tried to allocate 2048 bytes)' in /Applications/MAMP/htdocs/loqa.dev/vendor/imagine/imagine/lib/Imagine/Gd/Image.php:606Stack trace:#0 [internal function]: yii\base\ErrorHandler->handleFatalError()#1 {main}
+
+        try {
+            if (!$image->save($this->getUploadFilePath($variationName), $options))
+                array_push($errors, 'Can not save generated image.');
+        }catch (ErrorException $e){
+            array_push($errors, 'Allowed memory limit');
+        }
+
+        return $errors;
     }
 
     /**

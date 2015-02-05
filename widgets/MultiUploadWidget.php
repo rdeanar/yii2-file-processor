@@ -7,13 +7,13 @@
 
 namespace deanar\fileProcessor\widgets;
 
-use deanar\fileProcessor\helpers\AccessControl;
 use \Yii;
 use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\web\View;
 use deanar\fileProcessor\assets\UploadAssets;
 use deanar\fileProcessor\assets\BaseAssets;
 use deanar\fileProcessor\helpers\FileHelper;
-use yii\helpers\Url;
 
 
 class MultiUploadWidget extends BaseUploadWidget
@@ -91,7 +91,7 @@ EOF;
         file_processor.multi_upload($settingsJson);
 EOF;
 
-        $this->getView()->registerJs($fileApiInitSettings);
+        $this->getView()->registerJs($fileApiInitSettings, View::POS_HEAD);
         $this->getView()->registerJs($fileApiRun);
 
         return $this->render('multi_upload_widget', array(

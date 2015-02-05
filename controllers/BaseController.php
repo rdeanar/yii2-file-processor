@@ -36,7 +36,9 @@ class BaseController extends \yii\web\Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'remove' => ['post', 'delete'],
+                    'upload'    => ['post', 'options'],
+                    'remove'    => ['post', 'delete'],
+                    'sort'      => ['post'],
                 ],
             ],
         ];
@@ -87,53 +89,50 @@ class BaseController extends \yii\web\Controller
             $files = FileAPI::getFiles(); // Retrieve File List
             $images = array();
 
-            //$file = UploadedFile::getInstanceByName('filedata');
-
             // Fetch all image-info from files list
-            $this->fetchFiles($files, $images);
-
+            $errors = $this->fetchFiles($files, $images);
 
             // JSONP callback name
             $jsonp = isset($_REQUEST['callback']) ? trim($_REQUEST['callback']) : null;
 
             // JSON-data for server response
             $json = array(
-                'images' => $images
-            , 'data' => array('_REQUEST' => $_REQUEST, '_FILES' => $files)
+                'images' => $images,
+                'errors' => array_unique($errors),
             );
 
-            // Server response: "HTTP/1.1 200 OK"
             FileAPI::makeResponse(array(
-                'status' => FileAPI::OK
-            , 'statusText' => 'OK'
-            , 'body' => $json
+                'status' => empty($errors) ? FileAPI::OK : FileAPI::ERROR,
+                'statusText' => empty($errors) ? 'OK' : 'ERROR',
+                'body' => $json,
             ), $jsonp);
-            exit;
+            Yii::$app->end();
         }
 
     } // end of actionUpload
 
     private function fetchFiles($files, &$images, $name = 'file')
     {
+        $errors     = [];
+
+        $type       = Yii::$app->request->post('type');
+        $type_id    = Yii::$app->request->post('type_id');
+        $hash       = Yii::$app->request->post('hash');
+
+        // Check access. if `$type_id` is null, then access check must be only in ConnectFileSequence behaviour
+        if (!is_null($type_id)) {
+            $acl = VariationHelper::getAclOfType($type);
+            if (!AccessControl::checkAccess($acl, $type_id)) {
+                //throw new ForbiddenHttpException('You have no access to perform this upload');
+                Yii::warning('Someone trying to upload file with no access.','file-processor');
+                return ['You have no access to perform this upload'];
+            }
+        }
 
         if (isset($files['tmp_name'])) {
-            // system info
-            $type = Yii::$app->request->post('type');
-            $type_id = Yii::$app->request->post('type_id');
-            $hash = Yii::$app->request->post('hash');
 
-            // if `$type_id` is null, then access check must be only in ConnectFileSequence behaviour
-            if (!is_null($type_id)) {
-                $acl = VariationHelper::getAclOfType($type);
-                if (!AccessControl::checkAccess($acl, $type_id)) {
-                    throw new ForbiddenHttpException('You have no access to perform this upload');
-                }
-            }
-
-            // file info
             $file_temp_name = $files['tmp_name'];
             $file_real_name = basename($files['name']);
-
 
             if (is_uploaded_file($file_temp_name)) {
 
@@ -168,38 +167,46 @@ class BaseController extends \yii\web\Controller
                     // load configuration
                     $config = VariationHelper::getConfigOfType($model->type);
 
-                    // upload and process variations
-                    $model->process($file_temp_name, $config);
+                    $errors = array_merge(
+                        $errors,
+                        // upload and process variations
+                        $model->process($file_temp_name, $config)
+                    );
 
                     // insert id of uploaded file into attribute in model (if needed)
                     Uploads::updateConnectedModelAttribute($config, $model->type_id, $model->id);
 
-                    $images[$name] = [
-                        'width' => $model->width,
-                        'height' => $model->height,
-                        'mime' => $model->mime,
-                        'size' => $model->size,
-                        'id' => $model->id,
-                        'type' => $model->type,
-                        'type_id' => $model->type_id,
-                        'hash' => $model->hash,
-                        'errors' => null,
-                    ];
+                    if(empty($errors)) {
+                        $images[$name] = [
+                            'width' => $model->width,
+                            'height' => $model->height,
+                            'mime' => $model->mime,
+                            'size' => $model->size,
+                            'id' => $model->id,
+                            'type' => $model->type,
+                            'type_id' => $model->type_id,
+                            'hash' => $model->hash,
+                            'errors' => null,
+                        ];
+                    }else{
+                        $model->removeFile();
+                    }
 
                 } else {
-                    VarDumper::dumpAsString($model->getErrors());
-                    Yii::$app->end();
+                    Yii::warning('file was unable to be saved. Errors: ' . VarDumper::dumpAsString($model->getErrors()), 'file-processor');
+                    array_push($errors, 'File was unable to be saved.');
                 }
-            }else{ // is_uploaded_file
-                Yii::$app->end('No file was uploaded');
+            }else{
+                array_push($errors, 'File was unable to be uploaded.');
             }
 
         } else {
             foreach ($files as $name => $file) {
-                $this->fetchFiles($file, $images, $name);
+                $errors = array_merge($errors, $this->fetchFiles($file, $images, $name));
             }
         }
 
+        return $errors;
     }
 
     public function actionSort(){
