@@ -71,7 +71,7 @@ class WatermarkFilter implements \Imagine\Filter\FilterInterface
                 $this->pos_horizontal = $size->getWidth() - $wm_size->getWidth() - $this->wm_margin;
                 break;
             case self::WM_POSITION_CENTER:
-                $this->pos_horizontal = ($size->getWidth() - $wm_size->getWidth())/2;
+                $this->pos_horizontal = ceil(($size->getWidth() - $wm_size->getWidth()) / 2);
                 break;
         }
 
@@ -86,7 +86,7 @@ class WatermarkFilter implements \Imagine\Filter\FilterInterface
                 $this->pos_vertical = $size->getHeight() - $wm_size->getHeight() - $this->wm_margin;
                 break;
             case self::WM_POSITION_CENTER:
-                $this->pos_vertical = ($size->getHeight() - $wm_size->getHeight())/2;
+                $this->pos_vertical = ceil(($size->getHeight() - $wm_size->getHeight()) / 2);
                 break;
         }
 
