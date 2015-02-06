@@ -11,13 +11,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist deanar/yii2-file-processor "*"
+php composer.phar require --prefer-dist deanar/yii2-file-processor "dev-develop"
 ```
 
 or add
 
 ```
-"deanar/yii2-file-processor": "*"
+"deanar/yii2-file-processor": "dev-develop"
 ```
 
 to the require section of your `composer.json` file and update composer dependencies;
@@ -65,6 +65,8 @@ public function behaviors()
 Create file `file_processor_variations.php` in config directory and configure image variations like:
 
 ```php
+use deanar\fileProcessor\components\WatermarkFilter;
+
 return [
     'projects' => [
         '_original' => false,
@@ -74,7 +76,12 @@ return [
             'width' => 600,
             'height' => 350,
             'mode' => 'outbound',
-            'quality' => 75
+            'quality' => 75,
+            'watermark' => [
+                'path' => 'watermark.png',
+                'position' => WatermarkFilter::WM_POSITION_BOTTOM_RIGHT,
+                'margin' => 10,
+            ]
         ],
     ],
     'article_header' => [
@@ -259,12 +266,12 @@ All properties of DisplayWidget are required.
 - Console commands for generating new image variations [-----]
 - Mode for generating image variations on the fly [-----]
 - Mode for generating image variations in background [-----]
-- Advanced variation features: watermarks, cropping, rotation etc. [*----]
+- Advanced variation features: watermarks, cropping, rotation etc. [***--]
 - Beautiful alerts (e.g. http://rubaxa.github.io/Ply/) [-----]
 - Refactoring [*----]
 
 
 ## Changelog
 
-### 0.1.0 (2015-01-xx)
+### 0.1.0 (2015-02-xx)
   * First tagged version.

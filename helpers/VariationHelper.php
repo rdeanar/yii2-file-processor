@@ -12,6 +12,7 @@ namespace deanar\fileProcessor\helpers;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use deanar\fileProcessor\components\WatermarkFilter;
 
 class VariationHelper {
 
@@ -86,12 +87,32 @@ class VariationHelper {
             $config['width'] = $variationConfig['width'];
             $config['height'] = $variationConfig['height'];
             $config['mode'] = in_array($variationConfig['mode'], array('inset', 'outbound')) ? $variationConfig['mode'] : $defaultResizeMode;
-            if( isset($config['quality']) )
-                $config['quality'] =  is_numeric($config['quality']) ? $config['quality']  : self::default_quality();
+            if( isset($variationConfig['quality']) )
+                $config['quality'] =  is_numeric($variationConfig['quality']) ? $variationConfig['quality']  : self::default_quality();
+
+            if (isset($variationConfig['watermark'])) {
+
+                $default_watermark_config = array(
+                    'position'  => WatermarkFilter::WM_POSITION_BOTTOM_RIGHT,
+                    'margin'    => 5,
+                );
+
+                if (is_array($variationConfig['watermark'])) {
+                    if (isset($variationConfig['watermark']['path'])) {
+                        $config['watermark'] = ArrayHelper::merge(
+                            $default_watermark_config,
+                            $variationConfig['watermark']
+                        );
+                    }
+                } else {
+                    $config['watermark'] = ArrayHelper::merge(
+                        $default_watermark_config,
+                        ['path' => $variationConfig['watermark']]
+                    );
+                }
+            }
 
             // fill color for resize mode fill in (inset variation)
-            //$config['watermark'] = $variationConfig['watermark'];
-            // watermark position
             // crop
             // rotate
             // etc

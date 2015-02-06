@@ -10,6 +10,7 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use deanar\fileProcessor\helpers\FileHelper;
 use deanar\fileProcessor\helpers\VariationHelper;
+use deanar\fileProcessor\components\WatermarkFilter;
 
 use Imagine\Image;
 use Imagine\Image\Box;
@@ -252,7 +253,7 @@ class Uploads extends \yii\db\ActiveRecord
                 if (substr($variation_name, 0, 1) !== '_' || $variation_name == '_thumb') {
                     $errors = array_merge(
                         $errors,
-                        $this->makeVariation($image, $variation_name, $variation_config)
+                        $this->makeVariation($imagine, $image, $variation_name, $variation_config)
                     );
                 }
             }
@@ -274,7 +275,7 @@ class Uploads extends \yii\db\ActiveRecord
      *
      * Resize images by variation config
      */
-    public function makeVariation($image, $variationName, $variationConfig){
+    public function makeVariation($imagine, $image, $variationName, $variationConfig){
         $errors = [];
         if( !is_array($variationConfig)) return ['Variation config must be an array'];
 
@@ -293,17 +294,21 @@ class Uploads extends \yii\db\ActiveRecord
 
         $image = $image->thumbnail(new Box($config['width'], $config['height']), $mode);
 
+        // TODO order of watermark applying (before or after thumbnailing)
+        if(isset($config['watermark'])){
+            $filter = new WatermarkFilter($imagine, $config['watermark']['path'], $config['watermark']['position'], $config['watermark']['margin']);
+            $image = $filter->apply($image);
+        }
+
         $options = array(
             'quality' => $config['quality'],
         );
-
-        // PHP Fatal Error 'yii\base\ErrorException' with message 'Allowed memory size of 33554432 bytes exhausted (tried to allocate 2048 bytes)' in /Applications/MAMP/htdocs/loqa.dev/vendor/imagine/imagine/lib/Imagine/Gd/Image.php:606Stack trace:#0 [internal function]: yii\base\ErrorHandler->handleFatalError()#1 {main}
 
         try {
             if (!$image->save($this->getUploadFilePath($variationName), $options))
                 array_push($errors, 'Can not save generated image.');
         }catch (ErrorException $e){
-            array_push($errors, 'Allowed memory limit');
+            array_push($errors, $e->getMessage());
         }
 
         return $errors;

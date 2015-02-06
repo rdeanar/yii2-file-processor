@@ -22,6 +22,7 @@ use Imagine\Image\Point;
 use Imagine\Image\ImageInterface;
 use Imagine\Exception\Exception;
 use yii\web\ForbiddenHttpException;
+use deanar\fileProcessor\components\WatermarkFilter;
 
 
 class BaseController extends \yii\web\Controller
@@ -47,8 +48,18 @@ class BaseController extends \yii\web\Controller
     public function actionIndex()
     {
         $imagine = new Imagine();
-        $image = $imagine->open('testimage.jpg')->thumbnail(new Box(300, 200), ImageInterface::THUMBNAIL_OUTBOUND)->save('testimage2.jpg', array('quality' => 95));
-        return Html::img('testimage2.jpg');
+        $image = $imagine->open('testimage.jpg');
+
+        $image = $image->thumbnail(new Box(320, 320), ImageInterface::THUMBNAIL_INSET);
+
+        $path = Yii::getAlias('@webroot'.DIRECTORY_SEPARATOR.'wm.png');
+
+        $filter = new WatermarkFilter($imagine, $path, WatermarkFilter::WM_POSITION_CENTER, 5);
+        $image = $filter->apply($image);
+
+        $image->save('testimage2.jpg');
+
+        return Html::img('/testimage2.jpg');
         return $this->render('index');
         return '';
     }
@@ -123,7 +134,6 @@ class BaseController extends \yii\web\Controller
         if (!is_null($type_id)) {
             $acl = VariationHelper::getAclOfType($type);
             if (!AccessControl::checkAccess($acl, $type_id)) {
-                //throw new ForbiddenHttpException('You have no access to perform this upload');
                 Yii::warning('Someone trying to upload file with no access.','file-processor');
                 return ['You have no access to perform this upload'];
             }
