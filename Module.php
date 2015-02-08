@@ -16,7 +16,6 @@ class Module extends \yii\base\Module
     public $debug = false;
 
     public $image_driver;
-    public $space_replacement = '_';
     public $variations_config = [];
     public $upload_dir = 'uploads';
     public $default_quality = 95;

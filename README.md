@@ -36,7 +36,6 @@ Include module into your web config
     'fp' => [
         'class' => 'deanar\fileProcessor\Module',
         'image_driver' => \deanar\fileProcessor\models\Uploads::IMAGE_DRIVER_GD,
-        'space_replacement' => '-',
         'variations_config' => require(__DIR__ . '/file_processor_variations.php'),
         'upload_dir' => 'uploads',
         'default_quality' => 95,
@@ -107,6 +106,11 @@ return [
           
     ],
     
+    // Used if no variation with specified name found
+    '_default' => [ ]
+     
+    // Mixin for all variations. Used by merging arrays.
+    '_all' => []
 ];
 ```
 
