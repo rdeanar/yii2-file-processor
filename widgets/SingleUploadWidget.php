@@ -10,8 +10,8 @@ namespace deanar\fileProcessor\widgets;
 use \Yii;
 use yii\helpers\Json;
 use yii\web\View;
-use deanar\fileProcessor\assets\UploadAssets;
-use deanar\fileProcessor\assets\BaseAssets;
+use deanar\fileProcessor\assets\UploadAsset;
+use deanar\fileProcessor\assets\FileAPIAsset;
 use deanar\fileProcessor\helpers\FileHelper;
 
 
@@ -78,8 +78,8 @@ class SingleUploadWidget extends BaseUploadWidget
      */
     public function run()
     {
-        $base_asset = BaseAssets::register($this->getView());
-        $upload_asset = UploadAssets::register($this->getView());
+        $upload_asset = UploadAsset::register($this->getView());
+        $fileapi_asset = FileAPIAsset::register($this->getView());
 
         $additionalData = array(
             'type' => $this->type,
@@ -102,7 +102,7 @@ class SingleUploadWidget extends BaseUploadWidget
 
         $fileApiInitSettings = <<<EOF
         var FileAPI = {
-            debug: $this->debug, media: true, staticPath: '$upload_asset->baseUrl/jquery.fileapi/FileAPI/', 'url' : '$this->uploadUrl'
+            debug: $this->debug, media: true, staticPath: '$fileapi_asset->baseUrl/FileAPI/', 'url' : '$this->uploadUrl'
         };
 EOF;
 

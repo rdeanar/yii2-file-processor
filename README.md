@@ -110,7 +110,7 @@ return [
     '_default' => [ ]
      
     // Mixin for all variations. Used by merging arrays.
-    '_all' => []
+    '_all' => [ ]
 ];
 ```
 

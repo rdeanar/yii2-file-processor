@@ -2,7 +2,7 @@
 namespace deanar\fileProcessor\assets;
 use yii\web\AssetBundle;
 
-class BaseAssets extends AssetBundle
+class BaseUploadAsset extends AssetBundle
 {
 	public $sourcePath = '@deanar/fileProcessor/assets';
 
@@ -16,5 +16,6 @@ class BaseAssets extends AssetBundle
 	];
 
     public $depends = [
+		'deanar\fileProcessor\assets\FileAPIAsset',
     ];
 }

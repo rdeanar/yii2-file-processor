@@ -18,6 +18,8 @@
     },
     "require": {
         "php": ">=5.4.0",
+        "rubaxa/fileapi": "*",
+        "bower-asset/jcrop": "*",
         "yiisoft/yii2-imagine": "*"
     }
 }
