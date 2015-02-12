@@ -49,16 +49,19 @@
 </div><!-- /.modal -->
 </script>
 
-<?
- /*
- //for jquery.modal plugin
-<div id="popup" class="popup" style="display: none;">
-    <div class="popup__body"><div class="js-img"></div></div>
-    <div style="margin: 0 0 5px; text-align: center;">
-        <div class="js-upload btn btn_browse btn_browse_small">Upload</div>
-    </div>
-</div>
- */
-?>
+    <?
+    $crop_jquery_modal = false;
+    if ($crop_jquery_modal) {
+        //for jquery.modal plugin instead bootstrap modal
+        ?>
+        <div id="popup" class="popup" style="display: none;">
+            <div class="popup__body">
+                <div class="js-img"></div>
+            </div>
+            <div style="margin: 0 0 5px; text-align: center;">
+                <div class="js-upload btn btn_browse btn_browse_small">Upload</div>
+            </div>
+        </div>
+    <? } ?>
 
 <? } //if crop ?>
