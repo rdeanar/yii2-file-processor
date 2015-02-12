@@ -93,7 +93,7 @@ return [
         
         // For single file uploads. Automatically will be updated 'avatar' attribute in 'Project' model
         // with <id> of currently uploaded file
-        '_insert' => ['app\models\Project' => 'avatar']
+        '_insert' => ['app\models\Project' => 'avatar'],
         
         // variants of access control definitions          
         '_acl'       => '*', // * - all users, like without _acl
@@ -107,10 +107,10 @@ return [
     ],
     
     // Used if no variation with specified name found
-    '_default' => [ ]
+    '_default' => [ ],
      
     // Mixin for all variations. Used by merging arrays.
-    '_all' => [ ]
+    '_all' => [ ],
 ];
 ```
 
