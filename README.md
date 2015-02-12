@@ -152,7 +152,7 @@ Multi upload widget:
     ],
     
     'htmlOptions' => [
-        'class'          => 'additional-class'
+        'class'          => 'additional-class',
         'data-attribute' => 'value',
     ],
 
@@ -182,7 +182,7 @@ Single upload widget:
     ],
 
     'htmlOptions' => [
-        'class'          => 'additional-class'
+        'class'          => 'additional-class',
         'data-attribute' => 'value',
     ],
 
@@ -233,7 +233,7 @@ Add in the column list:
      'empty' => 'No Image', // optional
      'type' => 'projects',  // optional, default value goes from behavior options
      'variation' => '_thumb',
-     'htmlOptions' => [] // optional
+     'htmlOptions' => [], // optional
  ],
 ```
 
