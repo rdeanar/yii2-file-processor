@@ -115,7 +115,7 @@ return [
 ```
 
 **NB!** Don't forget to disable php execution in your upload dir.
-For example: If you use Apache web server, you can create `.htaccess` file in root of upload directory with following code inside:
+For example: If you use Apache web server, you can create `.htaccess` file in the root of upload directory with the following code inside:
 
 ```
 RemoveHandler .php

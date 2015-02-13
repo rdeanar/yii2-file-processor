@@ -10,7 +10,7 @@ use \deanar\fileProcessor\Module;
 <?=\yii\helpers\Html::beginTag('div', $htmlOptions)?>
 <input type="hidden" name="fp_hash[]" value="<?=$hash?>"/>
 <div class="b-upload__dnd">
-    <div class="b-upload__hint"><?=Module::t('ADD_FILES_TO_QUEUE')?></div>
+    <div class="b-upload__hint"><?=Module::t('ADD_FILES_TO_QUEUE_TIP')?></div>
 
     <ul class="clearfix js-files b-upload__files">
         <li class="js-file-tpl b-thumb js-sort" data-id="<%=uid%>" title="<%-name%>, <%-sizeText%>">
@@ -29,11 +29,11 @@ use \deanar\fileProcessor\Module;
     </ul>
 
     <div class="btn btn-success btn-small js-fileapi-wrapper">
-        <span>Add File</span>
+        <span><?=Module::t('ADD_FILES_BUTTON')?></span>
         <input type="file" name="filedata" <?= $multiple ? 'multiple' : '' ?> />
-    </div> <span class="fp-dragndrop-hint"><?=Module::t('DRAG_N_DROP_HERE')?></span>
+    </div> <span class="fp-dragndrop-hint"><?=Module::t('OR_DRAG_N_DROP_HERE')?></span>
     <div class="js-upload btn btn-success btn-small">
-        <span>Upload</span>
+        <span><?=Module::t('UPLOAD_BUTTON')?></span>
     </div>
 </div>
 <?=\yii\helpers\Html::endTag('div')?>
