@@ -34,6 +34,8 @@ class Module extends \yii\base\Module
     {
         $default = require(__DIR__ . '/variations_default.php');
         $this->variations_config = ArrayHelper::merge($this->variations_config, $default);
+
+        $this->registerTranslations();
     }
 
     /**
@@ -46,5 +48,35 @@ class Module extends \yii\base\Module
         }
 
         return true;
+    }
+
+    /**
+     * Register widget translations.
+     */
+    public function registerTranslations()
+    {
+        Yii::$app->i18n->translations['deanar/fileProcessor*'] = [
+            'class' => 'yii\i18n\PhpMessageSource',
+//            'sourceLanguage' => 'en-US',
+            'basePath' => '@deanar/fileProcessor/messages',
+            'fileMap' => [
+                'deanar/fileProcessor' => 'fp.php',
+            ],
+            'forceTranslation' => true
+        ];
+    }
+
+    /**
+     * Translate shortcut
+     *
+     * @param $message
+     * @param array $params
+     * @param null $language
+     *
+     * @return string
+     */
+    public static function t($message, $params = [], $language = null)
+    {
+        return \Yii::t('deanar/fileProcessor', $message, $params, $language);
     }
 }
