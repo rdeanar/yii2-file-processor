@@ -31,7 +31,7 @@
 <? if($crop){ ?>
 <script type="text/template" id="fp_single_upload_modal_bs">
 <div class="modal" id="<?=$identifier?>_modal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
 <!--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
@@ -49,11 +49,7 @@
 </div><!-- /.modal -->
 </script>
 
-    <?
-    $crop_jquery_modal = false;
-    if ($crop_jquery_modal) {
-        //for jquery.modal plugin instead bootstrap modal
-        ?>
+    <script type="text/template" id="fp_single_upload_modal_jq">
         <div id="popup" class="popup" style="display: none;">
             <div class="popup__body">
                 <div class="js-img"></div>
@@ -62,6 +58,6 @@
                 <div class="js-upload btn btn_browse btn_browse_small">Upload</div>
             </div>
         </div>
-    <? } ?>
+    </script>
 
 <? } //if crop ?>
