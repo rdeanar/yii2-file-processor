@@ -114,6 +114,13 @@ return [
 ];
 ```
 
+**NB!** Don't forget to disable php execution in your upload dir.
+For example: If you use Apache web server, you can create `.htaccess` file in root of upload directory with following code inside:
+
+```
+RemoveHandler .php
+AddType text/html .php
+```
 
 ## Upgrade instruction
 
