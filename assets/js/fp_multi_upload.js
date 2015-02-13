@@ -94,7 +94,7 @@ file_processor.multi_upload = function (settings) {
         elements: {
             ctrl: {upload: '.js-upload'},
             empty: {show: '.b-upload__hint'},
-            emptyQueue: {hide: '.js-upload'},
+            emptyQueue: {hide: '.js-upload', show: '.fp-dragndrop-hint' },
             list: '.js-files',
             file: {
                 tpl: '.js-file-tpl',

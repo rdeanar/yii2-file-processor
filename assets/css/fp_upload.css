@@ -75,6 +75,7 @@
 
 .b-upload {
     white-space: nowrap;
+    margin-bottom: 10px;
 }
 .b-upload__name,
 .b-upload__size {
@@ -96,14 +97,14 @@
 }
 
 .b-upload__dnd {
-    padding: 30px;
     border-radius: 5px;
-    margin-bottom: 10px;
-    background-color: rgba(0,0,0,.1);
+    margin: 0;
+    padding: 0;
 }
+
 .b-upload__dnd_hover {
-    color: #fff;
-    background-color: orange;
+    outline: 5px solid orange;
+    outline-offset: 3px;
 }
 
 .b-upload__hint {
@@ -292,17 +293,6 @@
     clear: both;
     content: '';
     display: block;
-}
-
-.b-upload__dnd {
-    padding: 30px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    background-color: rgba(0,0,0,.1);
-}
-.b-upload__dnd_hover {
-    color: #fff;
-    background-color: orange;
 }
 
 
