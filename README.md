@@ -22,6 +22,7 @@ or add
 
 to the require section of your `composer.json` file and update composer dependencies;
 
+At this moment you need to use minimum stability: dev.
 
 Then run migrations
 
