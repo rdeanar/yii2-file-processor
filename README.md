@@ -268,13 +268,14 @@ All properties of DisplayWidget are required.
 
 ## TODOs and progress
 
-- Special widget for single file uploads [****-]
+- Special widget for single file uploads [*****]
 - Access control system [****-]
-- Internationalization [-----]
+- Internationalization [*****]
 - More customization [**---]
 - Crop and other features of jquery.fileapi [***--]
 - API for upload files by url or by path [-----]
 - Console commands for generating new image variations [-----]
+- Admin interface for viewing and editing all uploaded files [-----]
 - Mode for generating image variations on the fly [-----]
 - Mode for generating image variations in background [-----]
 - Advanced variation features: watermarks, cropping, rotation etc. [***--]
