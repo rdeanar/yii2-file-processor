@@ -23,6 +23,14 @@ class MultiUploadWidget extends BaseUploadWidget
 
     private $options_allowed = ['autoUpload', 'multiple', 'accept', 'duplicate', 'maxSize', 'maxFiles', 'imageSize'];
 
+    protected $language_keys = [
+        'REMOVE_FILE_WITH_NAME_CONFIRM',
+        'REMOVE_FILE_FROM_QUEUE_CONFIRM',
+        'UPLOAD_ERROR',
+        'UPLOAD_ERROR_DETAILED',
+        'ORDER_SAVE_ERROR',
+    ];
+
     public function init()
     {
         parent::init();

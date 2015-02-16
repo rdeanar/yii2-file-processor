@@ -34,7 +34,7 @@ file_processor.multi_upload = function (settings) {
 
         // Remove a file from the upload queue
         onFileRemove: function (evt, file) {
-            if (!confirm("Are you sure?")) {
+            if (!confirm(file_processor.getMessage('REMOVE_FROM_QUEUE_CONFIRM'))) {
                 // Cancel remove
                 evt.preventDefault();
             }
@@ -47,12 +47,12 @@ file_processor.multi_upload = function (settings) {
             if (images === undefined || images.length < 1) {
                 if(FileAPI.debug){
                     if(uiEvt.result.errors === undefined){
-                        file_processor.raiseError('Error while uploading: ' + uiEvt.error);
+                        file_processor.raiseError(file_processor.getMessage('UPLOAD_ERROR_DETAILED', {errors: uiEvt.error}));
                     }else {
-                        file_processor.raiseError('Error while uploading: ' + uiEvt.result.errors.join(', '));
+                        file_processor.raiseError(file_processor.getMessage('UPLOAD_ERROR_DETAILED', {errors: uiEvt.result.errors.join(', ')}));
                     }
                 }else{
-                    file_processor.raiseError('Error while uploading');
+                    file_processor.raiseError(file_processor.getMessage('UPLOAD_ERROR'));
                 }
                 uploadContainer.fileapi("remove", file);
             } else {
@@ -77,7 +77,7 @@ file_processor.multi_upload = function (settings) {
                 .addClass('my_disabled')
             ;
 
-            if (confirm('Delete "' + file.name + '"?')) {
+            if (confirm(file_processor.getMessage('REMOVE_FILE_WITH_NAME_CONFIRM', {filename: file.name}))) {
                 $.post(settings.removeUrl, file.data);
 
                 uploadContainer.fileapi("remove", file);
@@ -145,7 +145,7 @@ file_processor.multi_upload = function (settings) {
                 data: {sort: sort},
                 type: "POST",
                 error: function (data, status, e) {
-                    file_processor.raiseError("Error while saving order.");
+                    file_processor.raiseError(file_processor.getMessage('ORDER_SAVE_ERROR'));
                 }
             });
 

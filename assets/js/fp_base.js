@@ -5,6 +5,8 @@
 
 
 var file_processor = file_processor || {
+        languageMessages: {},
+
         showValidationErrors: function(evt, data){
             setTimeout(function () { // do not remember why i use timeout, maybe error do not raised without it
                 $(data.all).each(function (i, file) {
@@ -47,6 +49,23 @@ var file_processor = file_processor || {
             var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
             var i = Math.floor(Math.log(bytes) / Math.log(k));
             return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+        },
+
+        addMessages: function(message_array){
+            jQuery.extend(file_processor.languageMessages, message_array);
+        },
+
+        getMessage: function(key, options){
+            if(file_processor.languageMessages){
+                var message = file_processor.languageMessages[key] || key;
+                if(options){
+                    for( var arg in options ) {
+                        message = message.replace("{" + arg + "}", options[arg]);
+                    }
+                }
+                return message;
+            }
+            return key;
         }
     };
 

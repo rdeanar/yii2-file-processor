@@ -8,8 +8,9 @@
 namespace deanar\fileProcessor\widgets;
 
 use \Yii;
-use deanar\fileProcessor\models\Uploads;
 use yii\helpers\Url;
+use deanar\fileProcessor\Module;
+use deanar\fileProcessor\models\Uploads;
 
 
 class BaseUploadWidget extends \yii\base\Widget
@@ -29,6 +30,8 @@ class BaseUploadWidget extends \yii\base\Widget
 
     public $debug;
 
+    protected $language_keys = [];
+
     public function init()
     {
         parent::init();
@@ -39,6 +42,15 @@ class BaseUploadWidget extends \yii\base\Widget
         $this->htmlOptions['id'] = $this->identifier;
 
         $this->debug       = Yii::$app->getModule('fp')->debug ? 'true' : 'false';
+
+        if (count($this->language_keys) > 0){
+            $language_array = [];
+            foreach($this->language_keys as $key){
+                $language_array[$key] = Module::t($key);
+            }
+            $language = 'file_processor.addMessages('.json_encode($language_array).');';
+            $this->getView()->registerJs($language);
+        }
     }
 
     /**

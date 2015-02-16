@@ -24,6 +24,13 @@ class SingleUploadWidget extends BaseUploadWidget
 
     private $options_allowed = ['autoUpload', 'accept', 'maxSize', 'imageSize'];
 
+    protected $language_keys = [
+        'UPLOAD_ERROR',
+        'UPLOAD_ERROR_DETAILED',
+        'REMOVE_FILE_CONFIRM',
+        'FLASH_NOT_SUPPORTED',
+    ];
+
     public function init()
     {
         parent::init();

@@ -28,6 +28,8 @@ file_processor.single_upload = function (settings) {
 
     uploadContainer.find('div.js-delete').on('click', function(){
 
+        if (!confirm(file_processor.getMessage('REMOVE_FILE_CONFIRM'))) return;
+
         var delete_array = [];
         if( typeof uploadContainer.fileapi('widget').files !== "undefined"){
 
@@ -74,7 +76,7 @@ file_processor.single_upload = function (settings) {
             var file = ui.files[0];
 
             if( !FileAPI.support.transform ) {
-                alert('Your browser does not support Flash :(');
+                file_processor.raiseError(file_processor.getMessage('FLASH_NOT_SUPPORTED'));
             }
             else if( file ){
 
@@ -146,12 +148,12 @@ file_processor.single_upload = function (settings) {
             if (images === undefined || images.length < 1) {
                 if(FileAPI.debug){
                     if(uiEvt.result.errors === undefined){
-                        file_processor.raiseError('Error while uploading: ' + uiEvt.error);
+                        file_processor.raiseError(file_processor.getMessage('UPLOAD_ERROR_DETAILED', {errors: uiEvt.error}));
                     }else {
-                        file_processor.raiseError('Error while uploading: ' + uiEvt.result.errors.join(', '));
+                        file_processor.raiseError(file_processor.getMessage('UPLOAD_ERROR_DETAILED', {errors: uiEvt.result.errors.join(', ')}));
                     }
                 }else{
-                    file_processor.raiseError('Error while uploading');
+                    file_processor.raiseError(file_processor.getMessage('UPLOAD_ERROR'));
                 }
                 uploadContainer.fileapi("remove", file);
                 uploadContainer.find('.js-preview').empty();
