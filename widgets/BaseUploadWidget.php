@@ -32,6 +32,15 @@ class BaseUploadWidget extends \yii\base\Widget
 
     protected $language_keys = [];
 
+    protected $language_keys_default = [
+        'MAX_FILES',
+        'MAX_SIZE',
+        'MIN_WIDTH',
+        'MIN_HEIGHT',
+        'MAX_WIDTH',
+        'MAX_HEIGHT',
+    ];
+
     public function init()
     {
         parent::init();
@@ -43,6 +52,7 @@ class BaseUploadWidget extends \yii\base\Widget
 
         $this->debug       = Yii::$app->getModule('fp')->debug ? 'true' : 'false';
 
+        $this->language_keys = array_merge($this->language_keys, $this->language_keys_default);
         if (count($this->language_keys) > 0){
             $language_array = [];
             foreach($this->language_keys as $key){

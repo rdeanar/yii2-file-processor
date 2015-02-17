@@ -8,7 +8,7 @@ var file_processor = file_processor || {
         languageMessages: {},
 
         showValidationErrors: function(evt, data){
-            setTimeout(function () { // do not remember why i use timeout, maybe error do not raised without it
+            setTimeout(function () { // don't remember why i use timeout, maybe error does not raise without it
                 $(data.all).each(function (i, file) {
                     if (file.$el === undefined) {
                         file_processor.showValidationErrorsByFile(file);
@@ -25,16 +25,16 @@ var file_processor = file_processor || {
             if (errors === undefined) return true;
 
             // count and size
-            if (errors.maxFiles)  this.raiseError('Can not add file "' + file.name + '". Too much files.');
-            if (errors.maxSize)   this.raiseError('Can not add file "' + file.name + '". File bigger that need by ' + this.bytesToSize(errors.maxSize) + '.');
+            if (errors.maxFiles)  this.raiseError(file_processor.getMessage('MAX_FILES', {filename: file.name}));
+            if (errors.maxSize)   this.raiseError(file_processor.getMessage('MAX_SIZE', {filename: file.name, maxSize: this.bytesToSize(errors.maxSize) }));
 
             // min dimension
-            if (errors.minWidth)  this.raiseError('Can not add file "' + file.name + '". File thinner than need by ' + errors.minWidth + ' pixels.');
-            if (errors.minHeight) this.raiseError('Can not add file "' + file.name + '". File lower than need by ' + errors.minHeight + ' pixels.');
+            if (errors.minWidth)  this.raiseError(file_processor.getMessage('MIN_WIDTH', {filename: file.name, minWidth: errors.minWidth}));
+            if (errors.minHeight) this.raiseError(file_processor.getMessage('MIN_HEIGHT', {filename: file.name, minHeight: errors.minHeight}));
 
             // max dimension
-            if (errors.maxWidth)  this.raiseError('Can not add file "' + file.name + '". File wider than need by  ' + errors.maxWidth + ' pixels.');
-            if (errors.maxHeight) this.raiseError('Can not add file "' + file.name + '". File higher than need by ' + errors.maxHeight + ' pixels.');
+            if (errors.maxWidth)  this.raiseError(file_processor.getMessage('MAX_WIDTH', {filename: file.name, maxWidth: errors.maxWidth}));
+            if (errors.maxHeight) this.raiseError(file_processor.getMessage('MAX_HEIGHT', {filename: file.name, maxHeight: errors.maxHeight}));
         },
 
         raiseError: function (msg) {
