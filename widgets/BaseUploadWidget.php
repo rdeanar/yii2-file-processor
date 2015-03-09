@@ -74,26 +74,28 @@ class BaseUploadWidget extends \yii\base\Widget
     {
         if (is_null($type_id)) return [];
 
-        $uploads = array();
+        $uploads = [];
 
         $array = Uploads::findByReference($type, $type_id);
 
-        foreach ($array as $item) {
-            /**
-             * @var $item Uploads
-             */
-            array_push($uploads,
-                array(
-                    'src' => $item->getPublicFileUrl($variation),
-                    'type' => $item->mime,
-                    'name' => $item->original,
-                    'size' => $item->size,
-                    'data' => array(
-                        'id' => $item->id,
-                        'type' => $item->type,
-                        'type_id' => $item->type_id,
-                    )
-                ));
+        if(!is_null($array)) {
+            foreach ($array as $item) {
+                /**
+                 * @var $item Uploads
+                 */
+                array_push($uploads,
+                    array(
+                        'src' => $item->getPublicFileUrl($variation),
+                        'type' => $item->mime,
+                        'name' => $item->original,
+                        'size' => $item->size,
+                        'data' => array(
+                            'id' => $item->id,
+                            'type' => $item->type,
+                            'type_id' => $item->type_id,
+                        )
+                    ));
+            }
         }
 
         return $uploads;

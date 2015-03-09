@@ -105,7 +105,7 @@ class Uploads extends \yii\db\ActiveRecord
     }
 
     public static function findByReference($type, $type_id){
-        if (is_null($type_id)) return [];
+        if (is_null($type_id)) return null;
 
         return self::find()
             ->where(['type' => $type, 'type_id' => $type_id])
