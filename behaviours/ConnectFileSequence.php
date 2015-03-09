@@ -144,7 +144,7 @@ class ConnectFileSequence extends Behavior
                 $condition = '';
         }
 
-        return $this->owner->hasMany( Uploads::className(), ['type_id' => 'id'] )
+        return $this->owner->hasMany( Uploads::className(), ['type_id' => $this->owner->primaryKey()[0]] )
             ->andOnCondition('type =:type',[':type' => $type])
             ->where($condition)
             ->orderBy('ord')->all();
