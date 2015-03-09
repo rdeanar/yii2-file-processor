@@ -47,7 +47,7 @@ class ConnectFileSequence extends Behavior
 
     public function deleteSequence($event)
     {
-        $type_id = $this->owner->getAttribute('id');
+        $type_id = $this->owner->getPrimaryKey();
         $types = $this->registeredTypes;
 
         $files = Uploads::find()->where([
@@ -63,7 +63,7 @@ class ConnectFileSequence extends Behavior
     }
 
     public function updateSequence($event){
-        $type_id = $this->owner->getAttribute('id');
+        $type_id = $this->owner->getPrimaryKey();
         $hashes = Yii::$app->request->post('fp_hash');
 
         foreach($hashes as $hash){
@@ -87,7 +87,7 @@ class ConnectFileSequence extends Behavior
     }
 
     public function updateFileIdInOwnerModel($event){
-        $type_id = $this->owner->getAttribute('id');
+        $type_id = $this->owner->getPrimaryKey();
 
         $configs = VariationHelper::getRawConfig();
         foreach($configs as $type => $config){
