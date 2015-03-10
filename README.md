@@ -11,13 +11,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist deanar/yii2-file-processor "dev-develop"
+php composer.phar require --prefer-dist deanar/yii2-file-processor:0.1.*
 ```
 
 or add
 
 ```
-"deanar/yii2-file-processor": "dev-develop"
+"deanar/yii2-file-processor": "0.1.*"
 ```
 
 to the require section of your `composer.json` file and update composer dependencies;
