@@ -101,6 +101,7 @@ class ConnectFileSequence extends Behavior
                 if(!is_null($files)){
                     $file = array_shift($files);
 
+                    //TODO replace with ActiveRecord::updateAttributes() to avoid loops
                     if($this->owner->getAttribute($attribute) !== $file->id) {
                         $this->owner->setAttribute($attribute, $file->id);
                         $this->owner->save(); // one more loop
@@ -129,7 +130,6 @@ class ConnectFileSequence extends Behavior
     public function getFiles($type=null,$selectFileType=null)
     {
         if($type === null) $type = $this->defaultType;
-        // TODO if defaultType is not set, use owner className
 
         if(!is_null($selectFileType)) $this->selectFileType = $selectFileType;
 

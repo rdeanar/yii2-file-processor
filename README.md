@@ -22,7 +22,7 @@ or add
 
 to the require section of your `composer.json` file and update composer dependencies;
 
-At this moment you need to use minimum stability: dev.
+If installation fails, try to use minimum stability: dev.
 
 Then run migrations
 
@@ -39,7 +39,7 @@ Include module into your web config
         //'image_driver' => \deanar\fileProcessor\models\Uploads::IMAGE_DRIVER_GD,
         'variations_config' => require(__DIR__ . '/file_processor_variations.php'),
         //'root_path' => '@frontend/web', // default: @webroot
-        //'root_url' => 'http://front.dmn.dev', // default: current host (Yii::$app->request->getHostInfo()) 
+        //'root_url' => 'http://front.example.com', // default: current host (Yii::$app->request->getHostInfo()) 
         'upload_dir' => 'uploads',
         //'default_quality' => 95,
         //'default_resize_mod' => 'outbound',
@@ -199,28 +199,28 @@ Single upload widget:
 ]) ?>
 ```
 
-If `preview` set to false, `crop` automatically set to false and will be very simple upload widget.
-If crop set to true, `accept` option automatically set to 'image/*'.
-For single upload without crop, `autoUpload` automatically set to true.
+If `preview` is set to `false`, `crop` automatically set to `false` and will be very simple upload widget.
+If crop set to `true`, `accept` option automatically set to `'image/*'`.
+For single upload without crop, `autoUpload` automatically set to `true`.
 
-To setup size of window and minimum size of crop area use `previewSize` property. Default is [200,200].  
+To setup size of window and minimum size of crop area use `previewSize` property. Default is `[200,200]`.  
 
 ---
 
 You can access your images\files by:
 
 ```php
-$model = Project::findOne(6);
+$model = ExampleModel::findOne(1);
 $uploads = $model->getFiles();
 
 foreach($uploads as $u){
     echo $u->imgTag('thumb2', true,['style'=>'border:1px solid red;']);
     //or just url (for files/download links)
-    echo $u->getPublicFileUrl('thumb2', true);
+    echo $u->getPublicFileUrl('original', true);
 }
 ```
 
-You can filter files:
+You can filter files like this:
 ```php
 $uploads = $model->imagesOnly()->getFiles();
 // or
@@ -272,14 +272,14 @@ All properties of DisplayWidget are required.
 ## TODOs and progress
 
 - Special widget for single file uploads [*****]
-- Access control system [****-]
-- Internationalization [*****]
+- Access control system [*****]
+- Internationalization (EN + RU) [*****]
 - More customization [**---]
 - Crop and other features of jquery.fileapi [***--]
 - API for upload files by url or by path [-----]
 - Console commands for generating new image variations [-----]
 - Admin interface for viewing and editing all uploaded files [-----]
-- Mode for generating image variations on the fly [-----]
+- Mode for generating image variations on the fly (by request) [-----]
 - Mode for generating image variations in background [-----]
 - Advanced variation features: watermarks, cropping, rotation etc. [***--]
 - Beautiful alerts (e.g. http://rubaxa.github.io/Ply/) [-----]
@@ -288,5 +288,5 @@ All properties of DisplayWidget are required.
 
 ## Changelog
 
-### 0.1.0 (2015-02-xx)
+### 0.1.0 (2015-03-10)
   * First tagged version.

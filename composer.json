@@ -1,8 +1,8 @@
 {
     "name": "deanar/yii2-file-processor",
-    "description": "Upload and process files and images",
+    "description": "Upload and process files and images for Yii2",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","upload","files","images","resize"],
+    "keywords": ["yii2","extension","upload","files","images","crop","resize","thumbnails"],
     "license": "BSD-4-Clause",
     "version" : "0.1.0",
     "authors": [
@@ -11,6 +11,10 @@
             "email": "rdeanar@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/rdeanar/yii2-file-processor/issues",
+        "source": "https://github.com/rdeanar/yii2-file-processor"
+    },
     "autoload": {
         "psr-4": {
             "deanar\\fileProcessor\\": ""
@@ -18,6 +22,7 @@
     },
     "require": {
         "php": ">=5.4.0",
+        "yiisoft/yii2": "*",
         "rubaxa/fileapi": "*",
         "bower-asset/jcrop": "*",
         "yiisoft/yii2-imagine": "*"
