@@ -74,6 +74,12 @@ class BaseController extends \yii\web\Controller
             if(is_null($$param)) throw new BadRequestHttpException('Missing required parameter: ' . $param);
         }
 
+        $acl = VariationHelper::getAclOfType($type);
+        if (!AccessControl::checkAccess($acl, $type_id)) {
+            Yii::warning('Someone trying to delete file with no access.', 'file-processor');
+            throw new ForbiddenHttpException('You have no access to delete current file');
+        }
+
         $success = Uploads::staticRemoveFile($id, compact('type', 'type_id'));
 
         if ($success) {

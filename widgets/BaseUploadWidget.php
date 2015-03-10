@@ -39,6 +39,8 @@ class BaseUploadWidget extends \yii\base\Widget
         'MIN_HEIGHT',
         'MAX_WIDTH',
         'MAX_HEIGHT',
+        'REMOVE_FILE_ERROR',
+        'REMOVE_FILE_ERROR_DETAILED',
     ];
 
     public function init()

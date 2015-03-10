@@ -10,6 +10,7 @@
 namespace deanar\fileProcessor\helpers;
 
 use Yii;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
 class AccessControl {
@@ -43,8 +44,13 @@ class AccessControl {
                         if($reference instanceof $className){
                             return $reference->getAttribute($attribute) == $user_id;
                         }else {
-                            $whereCondition = [$className::primaryKey()[0] => $reference, $attribute => $user_id];
-                            return $className::find()->where($whereCondition)->count() >  0;
+                            try{
+                                $whereCondition = [$className::primaryKey()[0] => $reference, $attribute => $user_id];
+                                return $className::find()->where($whereCondition)->count() >  0;
+                            }catch (Exception $e){
+                                Yii::warning('Invalid configuration: ' . $e->getMessage(), 'file-processor');
+                                return false;
+                            }
                         }
                     } else {
                         // throw new Exception; // maybe

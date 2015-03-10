@@ -78,11 +78,18 @@ file_processor.multi_upload = function (settings) {
             ;
 
             if (confirm(file_processor.getMessage('REMOVE_FILE_WITH_NAME_CONFIRM', {filename: file.name}))) {
-                $.post(settings.removeUrl, file.data);
-
-                uploadContainer.fileapi("remove", file);
-                // or so
-                evt.widget.remove(file);
+                $.post(settings.removeUrl, file.data)
+                    .done(function (data) {
+                        //TODO indication
+                        uploadContainer.fileapi("remove", file);
+                    })
+                    .fail(function (data) {
+                        if (FileAPI.debug) {
+                            file_processor.raiseError(file_processor.getMessage('REMOVE_FILE_ERROR_DETAILED', {errors: data.responseText}));
+                        } else {
+                            file_processor.raiseError(file_processor.getMessage('REMOVE_FILE_ERROR'));
+                        }
+                    });
             } else {
                 file.$el
                     .attr('disabled', false)

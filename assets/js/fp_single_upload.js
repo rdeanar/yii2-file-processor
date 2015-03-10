@@ -38,11 +38,23 @@ file_processor.single_upload = function (settings) {
                 delete_array.push([uploadContainer.fileapi('widget').files[file]]);
             }
 
-            for(i in delete_array){
-                $.post(settings.removeUrl, delete_array[i][0].data); //TODO indication + remove on ajax callback
-                uploadContainer.fileapi('remove', delete_array[i][0]);
+            var removeSuccess = false;
+            for (i in delete_array) {
+                $.post(settings.removeUrl, delete_array[i][0].data)
+                    .done(function (data) {
+                        //TODO indication
+                        uploadContainer.fileapi('remove', delete_array[i][0]);
+                        removeSuccess = true;
+                    })
+                    .fail(function (data) {
+                        if(FileAPI.debug) {
+                            file_processor.raiseError(file_processor.getMessage('REMOVE_FILE_ERROR_DETAILED', {errors: data.responseText}));
+                        }else{
+                            file_processor.raiseError(file_processor.getMessage('REMOVE_FILE_ERROR'));
+                        }
+                    });
             }
-            uploadContainer.find('.js-preview').empty();
+            if (removeSuccess) uploadContainer.find('.js-preview').empty();
         }
     });
 

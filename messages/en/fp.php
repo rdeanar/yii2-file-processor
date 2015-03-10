@@ -27,6 +27,8 @@ return [
     'REMOVE_FILE_CONFIRM' => 'Are you sure you want to delete file?',
     'REMOVE_FILE_WITH_NAME_CONFIRM' => 'Are you sure you want to delete file "{filename}"?',
     'REMOVE_FILE_FROM_QUEUE_CONFIRM' => 'Are you sure you want to delete file from queue?',
+    'REMOVE_FILE_ERROR' => 'Error while removing file',
+    'REMOVE_FILE_ERROR_DETAILED' => 'Error while removing file: {errors}',
     'ORDER_SAVE_ERROR' => 'Error while saving order',
 
     // validation errors

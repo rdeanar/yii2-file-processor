@@ -27,6 +27,8 @@ return [
     'REMOVE_FILE_CONFIRM' => 'Вы уверены, что хотите удалить файл?',
     'REMOVE_FILE_WITH_NAME_CONFIRM' => 'Вы уверены, что хотите удалить файл "{filename}"?',
     'REMOVE_FILE_FROM_QUEUE_CONFIRM' => 'Вы уверены, что хотите удалить файл из очереди?',
+    'REMOVE_FILE_ERROR' => 'Ошибка удаления файла',
+    'REMOVE_FILE_ERROR_DETAILED' => 'Ошибка удаления файла: {errors}',
     'ORDER_SAVE_ERROR' => 'Ошибка во время сохранения изменения порядка отображения',
 
     // validation errors
