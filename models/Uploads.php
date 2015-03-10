@@ -42,12 +42,17 @@ class Uploads extends \yii\db\ActiveRecord
 
     public $filename_separator = '_';
     public $upload_dir = '';    // override in init
+    public $root_path = null;    // override in init
+    public $root_url = null;    // override in init
     public $unlink_files;       // override in init
 
     public $image_driver = self::IMAGE_DRIVER_GD;
 
     public function init(){
         $this->upload_dir           = Yii::$app->getModule('fp')->upload_dir;
+        $this->root_path            = Yii::$app->getModule('fp')->root_path;
+        $this->root_url             = Yii::$app->getModule('fp')->root_url;
+
         $this->unlink_files         = Yii::$app->getModule('fp')->unlink_files;
         $this->image_driver         = Yii::$app->getModule('fp')->image_driver;
         parent::init();
@@ -321,7 +326,7 @@ class Uploads extends \yii\db\ActiveRecord
      * Get upload dir
      */
     public function getUploadDir($type){
-        return  Yii::getAlias('@webroot/'.$this->upload_dir.'/' . $type);
+        return Yii::getAlias( $this->root_path . DIRECTORY_SEPARATOR . $this->upload_dir . DIRECTORY_SEPARATOR . $type);
     }
 
 
@@ -331,7 +336,7 @@ class Uploads extends \yii\db\ActiveRecord
      *
      * Get upload path to file
      */
-    public function getUploadFilePath($variation='original'){
+    public function getUploadFilePath($variation = 'original'){
         return $this->getUploadDir($this->type) . DIRECTORY_SEPARATOR . $this->getFilenameByVariation($variation);
     }
 
@@ -343,8 +348,18 @@ class Uploads extends \yii\db\ActiveRecord
      *
      * Get Public file url
      */
-    public function getPublicFileUrl($variation='original', $absolute=false){
-        return Url::base($absolute) . '/' . $this->upload_dir . '/' . $this->type . '/' . $this->getFilenameByVariation($variation);
+    public function getPublicFileUrl($variation = 'original', $absolute = false){
+        $requestHost = Yii::$app->request->getHostInfo();
+        $currentHost = '';
+
+        if ($absolute) {
+            $currentHost = is_null($this->root_url) ? Url::base($absolute) : $this->root_url;
+        } else {
+            if (!is_null($this->root_url) && $this->root_url != $requestHost) {
+                $currentHost = $this->root_url;
+            }
+        }
+        return $currentHost . '/' . $this->upload_dir . '/' . $this->type . '/' . $this->getFilenameByVariation($variation);
     }
 
     /**

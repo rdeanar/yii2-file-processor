@@ -18,6 +18,8 @@ class Module extends \yii\base\Module
     public $image_driver;
     public $variations_config = [];
     public $upload_dir = 'uploads';
+    public $root_path = '@webroot';
+    public $root_url = null;
     public $default_quality = 95;
     public $default_resize_mod = 'inset';
     public $unlink_files = true;

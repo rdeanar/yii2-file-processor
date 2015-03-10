@@ -36,13 +36,15 @@ Include module into your web config
 'modules' => [
     'fp' => [
         'class' => 'deanar\fileProcessor\Module',
-        'image_driver' => \deanar\fileProcessor\models\Uploads::IMAGE_DRIVER_GD,
+        //'image_driver' => \deanar\fileProcessor\models\Uploads::IMAGE_DRIVER_GD,
         'variations_config' => require(__DIR__ . '/file_processor_variations.php'),
+        //'root_path' => '@frontend/web', // default: @webroot
+        //'root_url' => 'http://front.dmn.dev', // default: current host (Yii::$app->request->getHostInfo()) 
         'upload_dir' => 'uploads',
-        'default_quality' => 95,
+        //'default_quality' => 95,
         //'default_resize_mod' => 'outbound',
         //'unlink_files' => true,
-        'debug' => true, // FileAPI debug. false by default
+        //'debug' => true, // FileAPI debug. false by default
     ],
 ]
 ```
