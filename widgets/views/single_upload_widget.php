@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * @author Mikhail Razumovskiy <rdeanar@gmail.com>
 */
@@ -30,7 +30,7 @@ use \deanar\fileProcessor\Module;
 
 <hr/>
 
-<? if($crop){ ?>
+<?php if($crop){ ?>
 <script type="text/template" id="fp_single_upload_modal_bs">
 <div class="modal" id="<?=$identifier?>_modal">
     <div class="modal-dialog modal-lg">
@@ -60,4 +60,4 @@ use \deanar\fileProcessor\Module;
         </div>
     </script>
 
-<? } //if crop ?>
+<?php } //if crop ?>

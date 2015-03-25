@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * @author Mikhail Razumovskiy <rdeanar@gmail.com>
  */
@@ -21,7 +21,7 @@
              <div class="js-delete" style="display: none;">✖</div>
          </span>
       </span>
-    <? /*
+    <?php /*
     <hr>
     <!-- Controls, maybe later -->
     <button class="js-send btn-small btn btn-primary" type="submit">Send</button>

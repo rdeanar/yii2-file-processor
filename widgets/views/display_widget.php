@@ -1,14 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: deanar
- * Date: 03/06/14
- * Time: 12:51
+ * @author Mikhail Razumovskiy <rdeanar@gmail.com>
  */
 ?>
 
 <div class="fp-display-widget">
-    <?
+    <?php
     if(!is_null($uploads)) {
         foreach ($uploads as $upload) {
             /**

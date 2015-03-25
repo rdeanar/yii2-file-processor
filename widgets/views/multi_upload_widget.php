@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * @author Mikhail Razumovskiy <rdeanar@gmail.com>
  */
