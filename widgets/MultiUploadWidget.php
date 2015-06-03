@@ -34,7 +34,7 @@ class MultiUploadWidget extends BaseUploadWidget
     public function init()
     {
         parent::init();
-        $this->sortUrl = Url::toRoute('fp/base/sort', true);
+        $this->sortUrl = Url::toRoute('/fp/base/sort', true);
     }
 
     /**

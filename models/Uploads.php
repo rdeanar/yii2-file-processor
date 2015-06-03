@@ -326,7 +326,7 @@ class Uploads extends \yii\db\ActiveRecord
      * Get upload dir
      */
     public function getUploadDir($type){
-        return Yii::getAlias( $this->root_path . DIRECTORY_SEPARATOR . $this->upload_dir . DIRECTORY_SEPARATOR . $type);
+        return Yii::getAlias($this->root_path) . DIRECTORY_SEPARATOR . $this->upload_dir . DIRECTORY_SEPARATOR . $type;
     }
 
 

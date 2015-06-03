@@ -47,8 +47,8 @@ class BaseUploadWidget extends \yii\base\Widget
     {
         parent::init();
         $this->hash        = rand(111111, 999999);
-        $this->uploadUrl   = Url::toRoute('fp/base/upload', true);
-        $this->removeUrl   = Url::toRoute('fp/base/remove', true);
+        $this->uploadUrl   = Url::toRoute('/fp/base/upload', true);
+        $this->removeUrl   = Url::toRoute('/fp/base/remove', true);
         $this->identifier .= '-' . $this->hash;
         $this->htmlOptions['id'] = $this->identifier;
 
