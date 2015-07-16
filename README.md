@@ -206,6 +206,7 @@ For single upload without crop, `autoUpload` automatically set to `true`.
 To setup size of window and minimum size of crop area use `previewSize` property. Default is `[200,200]`.  
 
 `imageAutoOrientation` option is set to `false` by default
+
 ---
 
 You can access your images\files by:
