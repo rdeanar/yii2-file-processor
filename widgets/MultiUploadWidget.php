@@ -21,7 +21,7 @@ class MultiUploadWidget extends BaseUploadWidget
     public $sortUrl = null;
     public $multiple = true;
 
-    private $options_allowed = ['autoUpload', 'multiple', 'accept', 'duplicate', 'maxSize', 'maxFiles', 'imageSize'];
+    private $options_allowed = ['autoUpload', 'multiple', 'accept', 'duplicate', 'maxSize', 'maxFiles', 'imageSize', 'imageAutoOrientation'];
 
     protected $language_keys = [
         'REMOVE_FILE_WITH_NAME_CONFIRM',
@@ -44,6 +44,8 @@ class MultiUploadWidget extends BaseUploadWidget
     private function generateOptionsArray(){
         if (empty($this->options)) return [];
         $return = [];
+
+        $return['imageAutoOrientation'] = false;
 
         if(!isset($this->options['multiple'])) $this->options['multiple'] = true;
         if($this->options['multiple'] === false){

@@ -22,7 +22,7 @@ class SingleUploadWidget extends BaseUploadWidget
 
     public $previewSize = [200, 200];
 
-    private $options_allowed = ['autoUpload', 'accept', 'maxSize', 'imageSize'];
+    private $options_allowed = ['autoUpload', 'accept', 'maxSize', 'imageSize', 'imageAutoOrientation'];
 
     protected $language_keys = [
         'UPLOAD_ERROR',
@@ -67,6 +67,7 @@ class SingleUploadWidget extends BaseUploadWidget
 
         $this->options['maxFiles'] = 1;
         $this->multiple = false;
+        $return['imageAutoOrientation'] = false;
 
         foreach($this->options as $option_name => $option_value){
             if( !in_array($option_name, $this->options_allowed)) continue;
