@@ -277,7 +277,7 @@ All properties of DisplayWidget are required.
 - Access control system [*****]
 - Internationalization (EN + RU) [*****]
 - More customization [**---]
-- Crop and other features of jquery.fileapi [***--]
+- Crop and other features of jquery.fileapi [****-]
 - API for upload files by url or by path [-----]
 - Console commands for generating new image variations [-----]
 - Admin interface for viewing and editing all uploaded files [-----]
@@ -289,6 +289,10 @@ All properties of DisplayWidget are required.
 
 
 ## Changelog
+
+### 0.1.2 (2015-08-18)
+  * Bug: Several single-upload widgets with crop
+  * Bug: Removing image preview in single-upload widget on delete
 
 ### 0.1.1 (2015-07-16)
   * `imageAutoOrientation` option is set to `false` by default

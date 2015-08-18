@@ -38,13 +38,12 @@ file_processor.single_upload = function (settings) {
                 delete_array.push([uploadContainer.fileapi('widget').files[file]]);
             }
 
-            var removeSuccess = false;
             for (i in delete_array) {
                 $.post(settings.removeUrl, delete_array[i][0].data)
                     .done(function (data) {
                         //TODO indication
                         uploadContainer.fileapi('remove', delete_array[i][0]);
-                        removeSuccess = true;
+                        uploadContainer.find('.js-preview').empty();
                     })
                     .fail(function (data) {
                         if(FileAPI.debug) {
@@ -54,7 +53,6 @@ file_processor.single_upload = function (settings) {
                         }
                     });
             }
-            if (removeSuccess) uploadContainer.find('.js-preview').empty();
         }
     });
 
@@ -95,7 +93,7 @@ file_processor.single_upload = function (settings) {
                     var bootstrap = true;
                     if (bootstrap) {
 
-                        var modal_html = $('#fp_single_upload_modal_bs').html();
+                        var modal_html = $('#fp_single_upload_modal_bs_' + settings.identifier).html();
                         var modal_selector = '#' + settings.identifier + '_modal';
 
                         $(modal_selector).remove();

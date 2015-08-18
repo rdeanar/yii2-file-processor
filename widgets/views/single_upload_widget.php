@@ -31,7 +31,7 @@ use \deanar\fileProcessor\Module;
 <hr/>
 
 <?php if($crop){ ?>
-<script type="text/template" id="fp_single_upload_modal_bs">
+<script type="text/template" id="fp_single_upload_modal_bs_<?=$identifier?>">
 <div class="modal" id="<?=$identifier?>_modal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
