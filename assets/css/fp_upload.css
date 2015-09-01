@@ -175,6 +175,7 @@
     overflow: hidden;
     font-size: 12px;
     white-space: nowrap;
+    vertical-align: top;
 }
 
 .b-thumb__progress {
