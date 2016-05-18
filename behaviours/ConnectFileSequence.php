@@ -64,21 +64,23 @@ class ConnectFileSequence extends Behavior
 
     public function updateSequence($event){
         $type_id = $this->owner->getPrimaryKey();
-        $hashes = Yii::$app->request->post('fp_hash');
+        $hashes = Yii::$app->request->post('fp_hash', false);
 
-        foreach($hashes as $hash){
-            // fetch one record to determine `type` of upload
-            $uploadExample = Uploads::find()->select(['type'])->where(['hash' => $hash])->one();
-            if(count($uploadExample) > 0) {
-                $type = $uploadExample->getAttribute('type');
-                $acl = VariationHelper::getAclOfType($type);
+        if ($hashes) {
+            foreach($hashes as $hash){
+                // fetch one record to determine `type` of upload
+                $uploadExample = Uploads::find()->select(['type'])->where(['hash' => $hash])->one();
+                if(count($uploadExample) > 0) {
+                    $type = $uploadExample->getAttribute('type');
+                    $acl = VariationHelper::getAclOfType($type);
 
-                if(AccessControl::checkAccess($acl, $type_id)) {
-                    // all right, attach uploads
-                    Uploads::updateAll(['type_id' => $type_id], 'hash=:hash', [':hash' => $hash]);
-                }else{
-                    // no access, delete uploaded files
-                    Uploads::deleteAll('hash=:hash', [':hash' => $hash]);
+                    if(AccessControl::checkAccess($acl, $type_id)) {
+                        // all right, attach uploads
+                        Uploads::updateAll(['type_id' => $type_id], 'hash=:hash', [':hash' => $hash]);
+                    }else{
+                        // no access, delete uploaded files
+                        Uploads::deleteAll('hash=:hash', [':hash' => $hash]);
+                    }
                 }
             }
         }
