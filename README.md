@@ -218,7 +218,7 @@ $uploads = $model->getFiles();
 foreach($uploads as $u){
     echo $u->imgTag('thumb2', true,['style'=>'border:1px solid red;']);
     //or just url (for files/download links)
-    echo $u->getPublicFileUrl('original', true);
+    echo \yii\helpers\Html::a($u->original, $u->getPublicFileUrl('original', true));
 }
 ```
 

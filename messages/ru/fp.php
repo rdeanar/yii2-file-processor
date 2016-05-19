@@ -9,7 +9,7 @@ return [
     'FLASH_NOT_SUPPORTED' => 'Ваш браузер не поддерживает Flash :(',
 
     // multi upload
-    'ADD_FILES_TO_QUEUE_TIP' => 'Добавьте файлы очередь загрузки',
+    'ADD_FILES_TO_QUEUE_TIP' => 'Добавьте файлы в очередь загрузки',
     'ADD_FILES_BUTTON' => 'Выберите файлы',
     'OR_DRAG_N_DROP_HERE' => 'или перетащите их',
     'UPLOAD_BUTTON' => 'Загрузить',
