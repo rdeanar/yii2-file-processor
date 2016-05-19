@@ -63,10 +63,12 @@ class ConnectFileSequence extends Behavior
     }
 
     public function updateSequence($event){
+        if(Yii::$app->request->isConsoleRequest) return;
+
         $type_id = $this->owner->getPrimaryKey();
         $hashes = Yii::$app->request->post('fp_hash', false);
 
-        if ($hashes) {
+        if ($hashes != false && is_array($hashes)) {
             foreach($hashes as $hash){
                 // fetch one record to determine `type` of upload
                 $uploadExample = Uploads::find()->select(['type'])->where(['hash' => $hash])->one();
