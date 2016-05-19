@@ -290,6 +290,10 @@ All properties of DisplayWidget are required.
 
 ## Changelog
 
+=======
+### 0.1.3 (2016-05-19)
+  * Possibility to save models in console
+
 ### 0.1.2 (2015-08-18)
   * Bug: Several single-upload widgets with crop
   * Bug: Removing image preview in single-upload widget on delete
