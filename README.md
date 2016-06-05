@@ -291,6 +291,9 @@ All properties of DisplayWidget are required.
 ## Changelog
 
 =======
+### 0.1.4 (2016-06-05)
+  * Turkish language support (Thanks to https://github.com/fg)
+
 ### 0.1.3 (2016-05-19)
   * Possibility to save models in console
 
