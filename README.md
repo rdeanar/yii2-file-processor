@@ -11,7 +11,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist deanar/yii2-file-processor:0.1.*
+php composer.phar require --prefer-dist deanar/yii2-file-processor:"0.1.*"
 ```
 
 or add
